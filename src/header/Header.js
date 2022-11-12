@@ -34,6 +34,7 @@ const Header = (props) => {
   const [registrationSuccess, setSuccessRegistration] = useState(false);
   const [contactReqd, setContactReqd] = useState(false);
   const [registerPwdReqd, setRegisterPwdReqd] = useState(false);
+  const [profile, showUserProfile] = useState(false);
 
   const onSubmitLogin = (e) => {
     e.preventDefault();
@@ -90,9 +91,15 @@ const Header = (props) => {
     props.isLoggedIn(false);
   };
 
-  const profile = (e) => {
+  const displayUserProfile = (e) => {
     e.preventDefault();
-    console.log("User profile clicked!");
+    showUserProfile(true);
+    props.showProfile(true);
+  };
+  const goBack = (e) => {
+    e.preventDefault();
+    props.showProfile(false);
+    showUserProfile(false);
   };
   return (
     <Fragment>
@@ -101,7 +108,7 @@ const Header = (props) => {
          <Button variant="contained" style={{ marginLeft: "auto" }}>
         Login
       </Button> */}
-        {loggedIn ? (
+        {loggedIn && !profile ? (
           <div>
             <Button
               onClick={(e) => logout(e)}
@@ -111,11 +118,28 @@ const Header = (props) => {
               Logout
             </Button>
             <Button
-              onClick={(e) => profile(e)}
+              onClick={(e) => displayUserProfile(e)}
               variant="contained"
               style={{ marginLeft: "auto", marginRight: "auto" }}
             >
               Profile
+            </Button>
+          </div>
+        ) : loggedIn && profile ? (
+          <div>
+            <Button
+              onClick={(e) => logout(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "8px" }}
+            >
+              Logout
+            </Button>
+            <Button
+              onClick={(e) => goBack(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              Back
             </Button>
           </div>
         ) : (

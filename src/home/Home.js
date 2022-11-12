@@ -13,12 +13,17 @@ import Employee from "../Employee";
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
+  const [profile, showUserProfile] = useState(props.showProfile);
   const [open, setOpen] = useState(false);
   const [list, showList] = useState(false);
   const anchorRef = useRef(null);
   useEffect(() => {
     setIsLoggedIn(props.loggedIn);
   }, [props.loggedIn]);
+
+  useEffect(() => {
+    showUserProfile(props.showProfile);
+  }, [props.showProfile]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -64,10 +69,12 @@ const Home = (props) => {
           <h1> Service GO App</h1>
           <h2> Best place to find all sort of repairs </h2>
         </Fragment>
+      ) : profile === true ? (
+        <h1> Your profile is under construction</h1>
       ) : (
         <div>
           <h1>Welcome User</h1>
-          <Stack direction="row" spacing={2}>
+          <Stack spacing={2}>
             <div>
               <Button
                 ref={anchorRef}
