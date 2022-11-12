@@ -39,6 +39,13 @@ const Header = (props) => {
     e.preventDefault();
     setUserNmReqd(userLoginFormValues.username === "" ? true : false);
     setLoginPwdReqd(userLoginFormValues.password === "" ? true : false);
+    if (
+      userLoginFormValues.username !== "" &&
+      userLoginFormValues.password !== ""
+    ) {
+      setLoggedIn(true);
+      props.isLoggedIn(true);
+    }
   };
 
   const handleTabChange = (event, newValue) => {
@@ -80,8 +87,13 @@ const Header = (props) => {
   const logout = (e) => {
     e.preventDefault();
     setLoggedIn(false);
+    props.isLoggedIn(false);
   };
 
+  const profile = (e) => {
+    e.preventDefault();
+    console.log("User profile clicked!");
+  };
   return (
     <Fragment>
       <div className="header">
@@ -90,13 +102,22 @@ const Header = (props) => {
         Login
       </Button> */}
         {loggedIn ? (
-          <Button
-            onClick={(e) => logout(e)}
-            variant="contained"
-            style={{ marginLeft: "auto" }}
-          >
-            Logout
-          </Button>
+          <div>
+            <Button
+              onClick={(e) => logout(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "8px" }}
+            >
+              Logout
+            </Button>
+            <Button
+              onClick={(e) => profile(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              Profile
+            </Button>
+          </div>
         ) : (
           <Button
             onClick={(e) => setOpenRegistrationModal(true)}
