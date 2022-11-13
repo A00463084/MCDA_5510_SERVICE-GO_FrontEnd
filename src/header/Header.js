@@ -8,6 +8,7 @@ import "./Header.css";
 import Tab from "@material-ui/core/Tab";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
+import bcrypt from "bcryptjs";
 import { Link } from "react-router-dom";
 
 const Header = (props) => {
@@ -46,6 +47,11 @@ const Header = (props) => {
     ) {
       setLoggedIn(true);
       props.isLoggedIn(true);
+      const hashedPassword = bcrypt.hashSync(
+        userLoginFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+      console.log(hashedPassword);
     }
   };
 
@@ -55,7 +61,6 @@ const Header = (props) => {
 
   const onRegistration = (e) => {
     e.preventDefault();
-
     setfNameReqd(userRegisterFormValues.fname === "" ? true : false);
     setlNameReqd(userRegisterFormValues.lname === "" ? true : false);
     setEmailReqd(userRegisterFormValues.email === "" ? true : false);
@@ -63,26 +68,30 @@ const Header = (props) => {
       userRegisterFormValues.registerPassword === "" ? true : false
     );
     setContactReqd(userRegisterFormValues.contact === "" ? true : false);
+    const hashedPassword = bcrypt.hashSync(
+      userRegisterFormValues.registerPassword,
+      "$2a$10$CwTycUXWue0Thq9StjUM0u"
+    );
     let signupData = JSON.stringify({
       first_name: userRegisterFormValues.fname,
       last_name: userRegisterFormValues.lname,
       email_address: userRegisterFormValues.email,
       mobile_number: userRegisterFormValues.contact,
-      password: userRegisterFormValues.registerPassword,
+      password: hashedPassword,
     });
-
-    fetch(props.baseUrl + "signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-      body: signupData,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-      });
+    console.log(signupData);
+    // fetch(props.baseUrl + "signup", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Cache-Control": "no-cache",
+    //   },
+    //   body: signupData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((response) => {
+    //     setSuccessRegistration(response.status === "ACTIVE" ? true : false);
+    //   });
   };
 
   const logout = (e) => {
