@@ -18,22 +18,30 @@ const Header = (props) => {
     password: "",
   });
   const [userRegisterFormValues, setUserRegisterFormValues] = useState({
-    fname: "",
-    lname: "",
+    name: "",
     email: "",
-    registerPassword: "",
-    contact: "",
+    address: "",
+    city: "",
+    province: "",
+    country: "",
+    postalCode: "",
+    phone: "",
+    password: "",
   });
   const [userNmReqd, setUserNmReqd] = useState(false);
   const [loginPwdReqd, setLoginPwdReqd] = useState(false);
   const [openRegistrationModal, setOpenRegistrationModal] = useState(false);
   const [ModalTab, setModalTab] = useState(0);
   const handleCloseRegisterModal = () => setOpenRegistrationModal(false);
-  const [fNameReqd, setfNameReqd] = useState(false);
-  const [lNameReqd, setlNameReqd] = useState(false);
+  const [nameReqd, setNameReqd] = useState(false);
   const [emailReqd, setEmailReqd] = useState(false);
+  const [addrReqd, setAddrReqd] = useState(false);
+  const [cityReqd, setCityReqd] = useState(false);
+  const [countryReqd, setCountryReqd] = useState(false);
+  const [postalCodeReqd, setPostalCodeReqd] = useState(false);
+  const [provinceReqd, setProvinceReqd] = useState(false);
   const [registrationSuccess, setSuccessRegistration] = useState(false);
-  const [contactReqd, setContactReqd] = useState(false);
+  const [phoneReqd, setPhoneReqd] = useState(false);
   const [registerPwdReqd, setRegisterPwdReqd] = useState(false);
   const [profile, showUserProfile] = useState(false);
 
@@ -61,23 +69,33 @@ const Header = (props) => {
 
   const onRegistration = (e) => {
     e.preventDefault();
-    setfNameReqd(userRegisterFormValues.fname === "" ? true : false);
-    setlNameReqd(userRegisterFormValues.lname === "" ? true : false);
+    setNameReqd(userRegisterFormValues.name === "" ? true : false);
     setEmailReqd(userRegisterFormValues.email === "" ? true : false);
-    setRegisterPwdReqd(
-      userRegisterFormValues.registerPassword === "" ? true : false
-    );
-    setContactReqd(userRegisterFormValues.contact === "" ? true : false);
-    const hashedPassword = bcrypt.hashSync(
-      userRegisterFormValues.registerPassword,
-      "$2a$10$CwTycUXWue0Thq9StjUM0u"
-    );
+    setAddrReqd(userRegisterFormValues.address === "" ? true : false);
+    setCityReqd(userRegisterFormValues.city === "" ? true : false);
+    setCountryReqd(userRegisterFormValues.country === "" ? true : false);
+    setPostalCodeReqd(userRegisterFormValues.postalCode === "" ? true : false);
+    setProvinceReqd(userRegisterFormValues.province === "" ? true : false);
+    setRegisterPwdReqd(userRegisterFormValues.password === "" ? true : false);
+    setPhoneReqd(userRegisterFormValues.phone === "" ? true : false);
+    let hashedPassword = "";
+    console.log(registerPwdReqd);
+    if (registerPwdReqd) {
+      hashedPassword = bcrypt.hashSync(
+        userRegisterFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+    }
     let signupData = JSON.stringify({
-      first_name: userRegisterFormValues.fname,
-      last_name: userRegisterFormValues.lname,
+      name: userRegisterFormValues.name,
       email_address: userRegisterFormValues.email,
-      mobile_number: userRegisterFormValues.contact,
+      mobile_number: userRegisterFormValues.phone,
       password: hashedPassword,
+      address: userRegisterFormValues.address,
+      city: userRegisterFormValues.city,
+      province: userRegisterFormValues.province,
+      postal_code: userRegisterFormValues.postalCode,
+      country: userRegisterFormValues.country,
     });
     console.log(signupData);
     // fetch(props.baseUrl + "signup", {
@@ -189,7 +207,7 @@ const Header = (props) => {
         {ModalTab === 0 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="username">Username</InputLabel>
+              <InputLabel htmlFor="username">Email</InputLabel>
               <Input
                 id="username"
                 type="text"
@@ -246,46 +264,24 @@ const Header = (props) => {
         {ModalTab === 1 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="firstname">First Name</InputLabel>
+              <InputLabel htmlFor="name">Name</InputLabel>
               <Input
-                id="firstname"
+                id="name"
                 type="text"
-                value={userRegisterFormValues.fname}
+                value={userRegisterFormValues.name}
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    fname: e.target.value,
+                    name: e.target.value,
                   });
                 }}
               />
-              {fNameReqd && (
+              {nameReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
                 </FormHelperText>
               )}
             </FormControl>
-            <br />
-            <br />
-            <FormControl required>
-              <InputLabel htmlFor="lastname">Last Name</InputLabel>
-              <Input
-                id="lastname"
-                type="text"
-                value={userRegisterFormValues.lname}
-                onChange={(e) => {
-                  setUserRegisterFormValues({
-                    ...userRegisterFormValues,
-                    lname: e.target.value,
-                  });
-                }}
-              />
-              {lNameReqd && (
-                <FormHelperText>
-                  <span className="red">required</span>
-                </FormHelperText>
-              )}
-            </FormControl>
-            <br />
             <br />
             <FormControl required>
               <InputLabel htmlFor="email">Email</InputLabel>
@@ -307,7 +303,6 @@ const Header = (props) => {
               )}
             </FormControl>
             <br />
-            <br />
             <FormControl required>
               <InputLabel htmlFor="registerPassword">Password</InputLabel>
               <Input
@@ -317,7 +312,7 @@ const Header = (props) => {
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    registerPassword: e.target.value,
+                    password: e.target.value,
                   });
                 }}
               />
@@ -328,28 +323,127 @@ const Header = (props) => {
               )}
             </FormControl>
             <br />
-            <br />
             <FormControl required>
-              <InputLabel htmlFor="contact">Contact No.</InputLabel>
+              <InputLabel htmlFor="address">Address</InputLabel>
               <Input
-                id="contact"
-                type="number"
-                value={userRegisterFormValues.contact}
+                id="address"
+                type="text"
+                value={userRegisterFormValues.address}
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    contact: e.target.value,
+                    address: e.target.value,
                   });
                 }}
               />
-              {contactReqd && (
+              {addrReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
                 </FormHelperText>
               )}
             </FormControl>
             <br />
+            <FormControl required>
+              <InputLabel htmlFor="city">City</InputLabel>
+              <Input
+                id="city"
+                type="text"
+                value={userRegisterFormValues.city}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    city: e.target.value,
+                  });
+                }}
+              />
+              {cityReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
             <br />
+            <FormControl required>
+              <InputLabel htmlFor="province">Province</InputLabel>
+              <Input
+                id="province"
+                type="text"
+                value={userRegisterFormValues.province}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    province: e.target.value,
+                  });
+                }}
+              />
+              {provinceReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="country">Country</InputLabel>
+              <Input
+                id="country"
+                type="text"
+                value={userRegisterFormValues.country}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    country: e.target.value,
+                  });
+                }}
+              />
+              {countryReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
+              <Input
+                id="postalCode"
+                type="text"
+                value={userRegisterFormValues.postalCode}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    postalCode: e.target.value,
+                  });
+                }}
+              />
+              {postalCodeReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="phone">Contact No.</InputLabel>
+              <Input
+                id="phone"
+                type="number"
+                value={userRegisterFormValues.phone}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    phone: e.target.value,
+                  });
+                }}
+              />
+              {phoneReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+
             {registrationSuccess === true && (
               <FormControl>
                 <span>Registration Successful. Please Login!</span>
