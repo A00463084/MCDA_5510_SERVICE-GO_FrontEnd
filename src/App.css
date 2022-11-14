@@ -15,6 +15,10 @@
   grid-template-columns: 2fr 4fr 1fr;
 }
 
+.empoyee-info {
+  text-align: left;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

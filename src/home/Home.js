@@ -8,7 +8,7 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
-import employees from "../data/employees-data";
+import employeesData from "../data/employees-data";
 import Employee from "../Employee";
 
 const Home = (props) => {
@@ -16,6 +16,7 @@ const Home = (props) => {
   const [profile, showUserProfile] = useState(props.showProfile);
   const [open, setOpen] = useState(false);
   const [list, showList] = useState(false);
+  const [employees, setEmployees] = useState(employeesData);
   const anchorRef = useRef(null);
   useEffect(() => {
     setIsLoggedIn(props.loggedIn);
@@ -39,6 +40,28 @@ const Home = (props) => {
   };
 
   const openPlumbers = (e) => {
+    let filteredEmployees = employeesData.filter((employee) => {
+      return employee.category === "Plumber";
+    });
+    setEmployees(filteredEmployees);
+    setOpen(false);
+    showList(true);
+  };
+
+  const openElectricians = (e) => {
+    let filteredEmployees = employeesData.filter((employee) => {
+      return employee.category === "Electrician";
+    });
+    setEmployees(filteredEmployees);
+    setOpen(false);
+    showList(true);
+  };
+
+  const openPainters = (e) => {
+    let filteredEmployees = employeesData.filter((employee) => {
+      return employee.category === "Painter";
+    });
+    setEmployees(filteredEmployees);
     setOpen(false);
     showList(true);
   };
@@ -113,8 +136,10 @@ const Home = (props) => {
                           onKeyDown={handleListKeyDown}
                         >
                           <MenuItem onClick={openPlumbers}>Plumbing</MenuItem>
-                          <MenuItem onClick={handleClose}>Electrical</MenuItem>
-                          <MenuItem onClick={handleClose}>Furniture</MenuItem>
+                          <MenuItem onClick={openElectricians}>
+                            Electrical
+                          </MenuItem>
+                          <MenuItem onClick={openPainters}>Painting</MenuItem>
                         </MenuList>
                       </ClickAwayListener>
                     </Paper>
@@ -123,14 +148,17 @@ const Home = (props) => {
               </Popper>
             </div>
           </Stack>
-          {list === true ? (
+          {list === true && employees.length > 0 ? (
             <div>
               {employees.map((employee) => {
                 return (
                   <Employee
                     key={employee.name}
                     name={employee.name}
-                    description={employee.description}
+                    rating={employee.rating}
+                    cost={employee.cost}
+                    phone={employee.phone}
+                    email={employee.email}
                     iconUrl={employee.iconUrl}
                   />
                 );
