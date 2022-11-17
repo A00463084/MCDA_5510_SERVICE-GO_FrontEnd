@@ -91,6 +91,7 @@ const Home = (props) => {
         <Fragment>
           <h1> Service GO App</h1>
           <h2> Best place to find all sort of repairs </h2>
+          <h2>{process.env.REACT_APP_SECRET_NAME}</h2>
         </Fragment>
       ) : profile === true ? (
         <h1> Your profile is under construction</h1>
