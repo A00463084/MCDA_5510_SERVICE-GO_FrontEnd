@@ -80,7 +80,7 @@ const Header = (props) => {
     setPhoneReqd(userRegisterFormValues.phone === "" ? true : false);
     let hashedPassword = "";
     console.log(registerPwdReqd);
-    if (registerPwdReqd) {
+    if (!registerPwdReqd) {
       hashedPassword = bcrypt.hashSync(
         userRegisterFormValues.password,
         "$2a$10$CwTycUXWue0Thq9StjUM0u"
@@ -88,8 +88,8 @@ const Header = (props) => {
     }
     let signupData = JSON.stringify({
       name: userRegisterFormValues.name,
-      email_address: userRegisterFormValues.email,
-      mobile_number: userRegisterFormValues.phone,
+      email: userRegisterFormValues.email,
+      phone: userRegisterFormValues.phone,
       password: hashedPassword,
       address: userRegisterFormValues.address,
       city: userRegisterFormValues.city,
@@ -97,19 +97,19 @@ const Header = (props) => {
       postal_code: userRegisterFormValues.postalCode,
       country: userRegisterFormValues.country,
     });
-    console.log(signupData);
-    // fetch(props.baseUrl + "signup", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Cache-Control": "no-cache",
-    //   },
-    //   body: signupData,
-    // })
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-    //   });
+    console.log(signupData, process.env.REACT_APP_REGISTER);
+    fetch(process.env.REACT_APP_REGISTER, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+      },
+      body: signupData,
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setSuccessRegistration(response.status === "ACTIVE" ? true : false);
+      });
   };
 
   const logout = (e) => {
