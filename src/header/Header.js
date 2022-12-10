@@ -8,7 +8,9 @@ import "./Header.css";
 import Tab from "@material-ui/core/Tab";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
+import bcrypt from "bcryptjs";
 import { Link } from "react-router-dom";
+import { type } from "@testing-library/user-event/dist/type";
 
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -17,28 +19,59 @@ const Header = (props) => {
     password: "",
   });
   const [userRegisterFormValues, setUserRegisterFormValues] = useState({
-    fname: "",
-    lname: "",
+    name: "",
     email: "",
-    registerPassword: "",
-    contact: "",
+    address: "",
+    city: "",
+    province: "",
+    country: "",
+    postalCode: "",
+    phone: "",
+    password: "",
   });
   const [userNmReqd, setUserNmReqd] = useState(false);
   const [loginPwdReqd, setLoginPwdReqd] = useState(false);
   const [openRegistrationModal, setOpenRegistrationModal] = useState(false);
   const [ModalTab, setModalTab] = useState(0);
   const handleCloseRegisterModal = () => setOpenRegistrationModal(false);
-  const [fNameReqd, setfNameReqd] = useState(false);
-  const [lNameReqd, setlNameReqd] = useState(false);
+  const [nameReqd, setNameReqd] = useState(false);
   const [emailReqd, setEmailReqd] = useState(false);
+  const [addrReqd, setAddrReqd] = useState(false);
+  const [cityReqd, setCityReqd] = useState(false);
+  const [countryReqd, setCountryReqd] = useState(false);
+  const [postalCodeReqd, setPostalCodeReqd] = useState(false);
+  const [provinceReqd, setProvinceReqd] = useState(false);
   const [registrationSuccess, setSuccessRegistration] = useState(false);
-  const [contactReqd, setContactReqd] = useState(false);
+  const [phoneReqd, setPhoneReqd] = useState(false);
   const [registerPwdReqd, setRegisterPwdReqd] = useState(false);
+  const [profile, showUserProfile] = useState(false);
+
+  //Extra Form Validation Part: Francis Alex
+  const [correctname, setCorrectName] = useState(true);
+  const [correctcity, setCorrectCity] = useState(true);
+  const [correctcountry, setCorrectCountry] = useState(true);
+  const [correctprovince, setCorrectProvince] = useState(true);
+  const [correctpostalcode, setCorrectPostalcode] = useState(true);
+  const [correctphone, setCorrectPhone] = useState(true);
+  const [correctemail, setCorrectEmail] = useState(true);
+ //End Part
 
   const onSubmitLogin = (e) => {
     e.preventDefault();
     setUserNmReqd(userLoginFormValues.username === "" ? true : false);
     setLoginPwdReqd(userLoginFormValues.password === "" ? true : false);
+    if (
+      userLoginFormValues.username !== "" &&
+      userLoginFormValues.password !== ""
+    ) {
+      setLoggedIn(true);
+      props.isLoggedIn(true);
+      const hashedPassword = bcrypt.hashSync(
+        userLoginFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+      console.log(hashedPassword);
+    }
   };
 
   const handleTabChange = (event, newValue) => {
@@ -46,24 +79,111 @@ const Header = (props) => {
   };
 
   const onRegistration = (e) => {
+
+  
+
     e.preventDefault();
-
-    setfNameReqd(userRegisterFormValues.fname === "" ? true : false);
-    setlNameReqd(userRegisterFormValues.lname === "" ? true : false);
+    setNameReqd(userRegisterFormValues.name === "" ? true : false);
     setEmailReqd(userRegisterFormValues.email === "" ? true : false);
-    setRegisterPwdReqd(
-      userRegisterFormValues.registerPassword === "" ? true : false
-    );
-    setContactReqd(userRegisterFormValues.contact === "" ? true : false);
-    let signupData = JSON.stringify({
-      first_name: userRegisterFormValues.fname,
-      last_name: userRegisterFormValues.lname,
-      email_address: userRegisterFormValues.email,
-      mobile_number: userRegisterFormValues.contact,
-      password: userRegisterFormValues.registerPassword,
-    });
+    setAddrReqd(userRegisterFormValues.address === "" ? true : false);
+    setCityReqd(userRegisterFormValues.city === "" ? true : false);
+    setCountryReqd(userRegisterFormValues.country === "" ? true : false);
+    setPostalCodeReqd(userRegisterFormValues.postalCode === "" ? true : false);
+    setProvinceReqd(userRegisterFormValues.province === "" ? true : false);
+    setRegisterPwdReqd(userRegisterFormValues.password === "" ? true : false);
+    setPhoneReqd(userRegisterFormValues.phone === "" ? true : false);
 
-    fetch(props.baseUrl + "signup", {
+    //Extra Form Validation Functions Part: Francis Alex
+
+    const reg = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+    const reg_pc= RegExp(/^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g);
+    const reg_phone= RegExp(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g)
+    const reg_email=RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/g)
+
+    if(reg.test(userRegisterFormValues.name)==false)
+    {
+      setCorrectName(false);
+    }else{
+      
+      setCorrectName(true);
+    }
+    if(reg.test(userRegisterFormValues.city)==false)
+    {
+      setCorrectCity(false);
+    }else{
+      
+      setCorrectCity(true);
+    }
+    if(reg.test(userRegisterFormValues.province)==false)
+    {
+      setCorrectProvince(false);
+    }else
+    {
+      
+      setCorrectProvince(true);
+    }
+    if(reg.test(userRegisterFormValues.country)==false)
+    {
+      setCorrectCountry(false);
+    }else
+    {
+      
+      setCorrectCountry(true);
+    }
+
+    if(reg_pc.test(userRegisterFormValues.postalCode)==false)
+    {
+      setCorrectPostalcode(false)
+    }else
+    {
+      
+      setCorrectPostalcode(true)
+    }
+
+    if(reg_phone.test(userRegisterFormValues.phone)==false)
+    {
+      setCorrectPhone(false)
+    }else
+    {
+      
+      setCorrectPhone(true)
+    }
+
+    if(reg_email.test(userRegisterFormValues.email)==false)
+    {
+      setCorrectEmail(false)
+    }else
+    {
+      
+      setCorrectEmail(true)
+    }
+
+
+      //Ending
+
+
+    let hashedPassword = "";
+    console.log(registerPwdReqd);
+    if (!registerPwdReqd) {
+      hashedPassword = userRegisterFormValues.password;
+      hashedPassword = bcrypt.hashSync(
+         userRegisterFormValues.password,
+         "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+    }
+    let signupData = JSON.stringify({
+      name: userRegisterFormValues.name,
+      email: userRegisterFormValues.email,
+      phone: userRegisterFormValues.phone,
+      password: hashedPassword,
+      address: userRegisterFormValues.address,
+      city: userRegisterFormValues.city,
+      province: userRegisterFormValues.province,
+      postal_code: userRegisterFormValues.postalCode,
+      country: userRegisterFormValues.country,
+    });
+    console.log(signupData, process.env.REACT_APP_REGISTER);
+    fetch(process.env.REACT_APP_REGISTER, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,8 +200,19 @@ const Header = (props) => {
   const logout = (e) => {
     e.preventDefault();
     setLoggedIn(false);
+    props.isLoggedIn(false);
   };
 
+  const displayUserProfile = (e) => {
+    e.preventDefault();
+    showUserProfile(true);
+    props.showProfile(true);
+  };
+  const goBack = (e) => {
+    e.preventDefault();
+    props.showProfile(false);
+    showUserProfile(false);
+  };
   return (
     <Fragment>
       <div className="header">
@@ -89,14 +220,40 @@ const Header = (props) => {
          <Button variant="contained" style={{ marginLeft: "auto" }}>
         Login
       </Button> */}
-        {loggedIn ? (
-          <Button
-            onClick={(e) => logout(e)}
-            variant="contained"
-            style={{ marginLeft: "auto" }}
-          >
-            Logout
-          </Button>
+        {loggedIn && !profile ? (
+          <div>
+            <Button
+              onClick={(e) => logout(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "8px" }}
+            >
+              Logout
+            </Button>
+            <Button
+              onClick={(e) => displayUserProfile(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              Profile
+            </Button>
+          </div>
+        ) : loggedIn && profile ? (
+          <div>
+            <Button
+              onClick={(e) => logout(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "8px" }}
+            >
+              Logout
+            </Button>
+            <Button
+              onClick={(e) => goBack(e)}
+              variant="contained"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              Back
+            </Button>
+          </div>
         ) : (
           <Button
             onClick={(e) => setOpenRegistrationModal(true)}
@@ -135,7 +292,7 @@ const Header = (props) => {
         {ModalTab === 0 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="username">Username</InputLabel>
+              <InputLabel htmlFor="username">Email</InputLabel>
               <Input
                 id="username"
                 type="text"
@@ -192,46 +349,29 @@ const Header = (props) => {
         {ModalTab === 1 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="firstname">First Name</InputLabel>
+              <InputLabel htmlFor="name">Name</InputLabel>
               <Input
-                id="firstname"
+                id="name"
                 type="text"
-                value={userRegisterFormValues.fname}
+                value={userRegisterFormValues.name}
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    fname: e.target.value,
+                    name: e.target.value,
                   });
                 }}
               />
-              {fNameReqd && (
+              {nameReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
                 </FormHelperText>
               )}
-            </FormControl>
-            <br />
-            <br />
-            <FormControl required>
-              <InputLabel htmlFor="lastname">Last Name</InputLabel>
-              <Input
-                id="lastname"
-                type="text"
-                value={userRegisterFormValues.lname}
-                onChange={(e) => {
-                  setUserRegisterFormValues({
-                    ...userRegisterFormValues,
-                    lname: e.target.value,
-                  });
-                }}
-              />
-              {lNameReqd && (
+              {!correctname && !nameReqd && (
                 <FormHelperText>
-                  <span className="red">required</span>
+                  <span className="red">Invalid Name: Name should not contain numbers and special symbols</span>
                 </FormHelperText>
               )}
             </FormControl>
-            <br />
             <br />
             <FormControl required>
               <InputLabel htmlFor="email">Email</InputLabel>
@@ -251,8 +391,12 @@ const Header = (props) => {
                   <span className="red">required</span>
                 </FormHelperText>
               )}
+              {!correctemail && !emailReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Email: Enter Correct Email Address</span>
+                </FormHelperText>
+              )}
             </FormControl>
-            <br />
             <br />
             <FormControl required>
               <InputLabel htmlFor="registerPassword">Password</InputLabel>
@@ -263,7 +407,7 @@ const Header = (props) => {
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    registerPassword: e.target.value,
+                    password: e.target.value,
                   });
                 }}
               />
@@ -274,28 +418,152 @@ const Header = (props) => {
               )}
             </FormControl>
             <br />
-            <br />
             <FormControl required>
-              <InputLabel htmlFor="contact">Contact No.</InputLabel>
+              <InputLabel htmlFor="address">Street</InputLabel>
               <Input
-                id="contact"
-                type="number"
-                value={userRegisterFormValues.contact}
+                id="address"
+                type="text"
+                value={userRegisterFormValues.address}
                 onChange={(e) => {
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
-                    contact: e.target.value,
+                    address: e.target.value,
                   });
                 }}
               />
-              {contactReqd && (
+              {addrReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
                 </FormHelperText>
               )}
             </FormControl>
             <br />
+            <FormControl required>
+              <InputLabel htmlFor="city">City</InputLabel>
+              <Input
+                id="city"
+                type="text"
+                value={userRegisterFormValues.city}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    city: e.target.value,
+                  });
+                }}
+              />
+              {cityReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctcity && !cityReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid City: City should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
+            </FormControl>
             <br />
+            <FormControl required>
+              <InputLabel htmlFor="province">Province</InputLabel>
+              <Input
+                id="province"
+                type="text"
+                value={userRegisterFormValues.province}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    province: e.target.value,
+                  });
+                }}
+              />
+              {provinceReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctprovince && !provinceReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Province: Province should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="country">Country</InputLabel>
+              <Input
+                id="country"
+                type="text"
+                value={userRegisterFormValues.country}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    country: e.target.value,
+                  });
+                }}
+              />
+              {countryReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctcountry && !countryReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Country: Country should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
+              <Input
+                id="postalCode"
+                type="text"
+                value={userRegisterFormValues.postalCode}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    postalCode: e.target.value,
+                  });
+                }}
+              />
+              {postalCodeReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctpostalcode && !postalCodeReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Postal Code: Please Enter Valid Postal Code</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="phone">Contact No.</InputLabel>
+              <Input
+                id="phone"
+                type="number"
+                value={userRegisterFormValues.phone}
+                onChange={(e) => {
+                  setUserRegisterFormValues({
+                    ...userRegisterFormValues,
+                    phone: e.target.value,
+                  });
+                }}
+              />
+              {phoneReqd && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctphone && !phoneReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Phone Number: Please Enter Valid Phone Number</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+
             {registrationSuccess === true && (
               <FormControl>
                 <span>Registration Successful. Please Login!</span>
