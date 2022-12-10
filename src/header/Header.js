@@ -10,6 +10,7 @@ import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
 import bcrypt from "bcryptjs";
 import { Link } from "react-router-dom";
+import { type } from "@testing-library/user-event/dist/type";
 
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -45,6 +46,16 @@ const Header = (props) => {
   const [registerPwdReqd, setRegisterPwdReqd] = useState(false);
   const [profile, showUserProfile] = useState(false);
 
+  //Extra Form Validation Part: Francis Alex
+  const [correctname, setCorrectName] = useState(true);
+  const [correctcity, setCorrectCity] = useState(true);
+  const [correctcountry, setCorrectCountry] = useState(true);
+  const [correctprovince, setCorrectProvince] = useState(true);
+  const [correctpostalcode, setCorrectPostalcode] = useState(true);
+  const [correctphone, setCorrectPhone] = useState(true);
+  const [correctemail, setCorrectEmail] = useState(true);
+ //End Part
+
   const onSubmitLogin = (e) => {
     e.preventDefault();
     setUserNmReqd(userLoginFormValues.username === "" ? true : false);
@@ -68,6 +79,9 @@ const Header = (props) => {
   };
 
   const onRegistration = (e) => {
+
+  
+
     e.preventDefault();
     setNameReqd(userRegisterFormValues.name === "" ? true : false);
     setEmailReqd(userRegisterFormValues.email === "" ? true : false);
@@ -78,12 +92,83 @@ const Header = (props) => {
     setProvinceReqd(userRegisterFormValues.province === "" ? true : false);
     setRegisterPwdReqd(userRegisterFormValues.password === "" ? true : false);
     setPhoneReqd(userRegisterFormValues.phone === "" ? true : false);
+
+    //Extra Form Validation Functions Part: Francis Alex
+
+    const reg = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+    const reg_pc= RegExp(/^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g);
+    const reg_phone= RegExp(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g)
+    const reg_email=RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/g)
+
+    if(reg.test(userRegisterFormValues.name)==false)
+    {
+      setCorrectName(false);
+    }else{
+      
+      setCorrectName(true);
+    }
+    if(reg.test(userRegisterFormValues.city)==false)
+    {
+      setCorrectCity(false);
+    }else{
+      
+      setCorrectCity(true);
+    }
+    if(reg.test(userRegisterFormValues.province)==false)
+    {
+      setCorrectProvince(false);
+    }else
+    {
+      
+      setCorrectProvince(true);
+    }
+    if(reg.test(userRegisterFormValues.country)==false)
+    {
+      setCorrectCountry(false);
+    }else
+    {
+      
+      setCorrectCountry(true);
+    }
+
+    if(reg_pc.test(userRegisterFormValues.postalCode)==false)
+    {
+      setCorrectPostalcode(false)
+    }else
+    {
+      
+      setCorrectPostalcode(true)
+    }
+
+    if(reg_phone.test(userRegisterFormValues.phone)==false)
+    {
+      setCorrectPhone(false)
+    }else
+    {
+      
+      setCorrectPhone(true)
+    }
+
+    if(reg_email.test(userRegisterFormValues.email)==false)
+    {
+      setCorrectEmail(false)
+    }else
+    {
+      
+      setCorrectEmail(true)
+    }
+
+
+      //Ending
+
+
     let hashedPassword = "";
     console.log(registerPwdReqd);
     if (!registerPwdReqd) {
+      hashedPassword = userRegisterFormValues.password;
       hashedPassword = bcrypt.hashSync(
-        userRegisterFormValues.password,
-        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+         userRegisterFormValues.password,
+         "$2a$10$CwTycUXWue0Thq9StjUM0u"
       );
     }
     let signupData = JSON.stringify({
@@ -281,6 +366,11 @@ const Header = (props) => {
                   <span className="red">required</span>
                 </FormHelperText>
               )}
+              {!correctname && !nameReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Name: Name should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
             </FormControl>
             <br />
             <FormControl required>
@@ -299,6 +389,11 @@ const Header = (props) => {
               {emailReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctemail && !emailReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Email: Enter Correct Email Address</span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -324,7 +419,7 @@ const Header = (props) => {
             </FormControl>
             <br />
             <FormControl required>
-              <InputLabel htmlFor="address">Address</InputLabel>
+              <InputLabel htmlFor="address">Street</InputLabel>
               <Input
                 id="address"
                 type="text"
@@ -361,6 +456,11 @@ const Header = (props) => {
                   <span className="red">required</span>
                 </FormHelperText>
               )}
+              {!correctcity && !cityReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid City: City should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
             </FormControl>
             <br />
             <FormControl required>
@@ -379,6 +479,11 @@ const Header = (props) => {
               {provinceReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctprovince && !provinceReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Province: Province should not contain numbers and special symbols</span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -401,6 +506,11 @@ const Header = (props) => {
                   <span className="red">required</span>
                 </FormHelperText>
               )}
+              {!correctcountry && !countryReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Country: Country should not contain numbers and special symbols</span>
+                </FormHelperText>
+              )}
             </FormControl>
             <br />
             <FormControl required>
@@ -421,6 +531,11 @@ const Header = (props) => {
                   <span className="red">required</span>
                 </FormHelperText>
               )}
+              {!correctpostalcode && !postalCodeReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Postal Code: Please Enter Valid Postal Code</span>
+                </FormHelperText>
+              )}
             </FormControl>
             <br />
             <FormControl required>
@@ -439,6 +554,11 @@ const Header = (props) => {
               {phoneReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
+                </FormHelperText>
+              )}
+              {!correctphone && !phoneReqd && (
+                <FormHelperText>
+                  <span className="red">Invalid Phone Number: Please Enter Valid Phone Number</span>
                 </FormHelperText>
               )}
             </FormControl>
