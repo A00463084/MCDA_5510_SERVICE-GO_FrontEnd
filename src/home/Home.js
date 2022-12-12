@@ -10,6 +10,7 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import employeesData from "../data/employees-data";
 import Employee from "../Employee";
+import logo from "../Homepage_design.jpg"
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
@@ -89,9 +90,7 @@ const Home = (props) => {
     <div>
       {isLoggedIn === false ? (
         <Fragment>
-          <h1> Service GO App</h1>
-          <h2> Best place to find all sort of repairs </h2>
-          <h2>{process.env.REACT_APP_SECRET_NAME}</h2>
+          <img alt="Homepage Design" src={logo} style={{ minHeight: '100%' }}/>
         </Fragment>
       ) : profile === true ? (
         <h1> Your profile is under construction</h1>
