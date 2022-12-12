@@ -70,7 +70,7 @@ const Header = (props) => {
       .then((response) => {
         response.json();
       })
-      .then((data) => localStorage.setItem("email", data.email))
+      .then((data) => localStorage.setItem("email", data))
       .then((response) => {
         if (response.status === "ACTIVE") {
           setLoggedIn(true);
@@ -106,7 +106,14 @@ const Header = (props) => {
 
     //Extra Form Validation Functions Part: Francis Alex
 
-    const reg = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+    const reg_em = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_cit = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_pro = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_count = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
     const reg_pc = RegExp(
       /^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g
     );
@@ -117,22 +124,22 @@ const Header = (props) => {
       /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/g
     );
 
-    if (reg.test(userRegisterFormValues.name) == false) {
+    if (reg_em.test(userRegisterFormValues.name) == false) {
       setCorrectName(false);
     } else {
       setCorrectName(true);
     }
-    if (reg.test(userRegisterFormValues.city) == false) {
+    if (reg_cit.test(userRegisterFormValues.city) == false) {
       setCorrectCity(false);
     } else {
       setCorrectCity(true);
     }
-    if (reg.test(userRegisterFormValues.province) == false) {
+    if (reg_pro.test(userRegisterFormValues.province) == false) {
       setCorrectProvince(false);
     } else {
       setCorrectProvince(true);
     }
-    if (reg.test(userRegisterFormValues.country) == false) {
+    if (reg_count.test(userRegisterFormValues.country) == false) {
       setCorrectCountry(false);
     } else {
       setCorrectCountry(true);
