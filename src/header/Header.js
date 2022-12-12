@@ -193,16 +193,26 @@ const Header = (props) => {
       country: userRegisterFormValues.country,
     });
 
+    console.log(nameReqd,emailReqd,addrReqd,cityReqd,countryReqd,postalCodeReqd,provinceReqd,phoneReqd,registerPwdReqd);
+    console.log("correct name",correctname);
+    console.log("correct city",correctcity);
+    console.log("correct province",correctprovince);
+    console.log("correct country",correctcountry);
+    console.log("correct po",correctpostalcode);
+    console.log("correct email",correctemail);
+    console.log("correct phone",correctphone);
+    
+
     if (
-      nameReqd &&
-      emailReqd &&
-      addrReqd &&
-      cityReqd &&
-      countryReqd &&
-      postalCodeReqd &&
-      provinceReqd &&
-      phoneReqd &&
-      registerPwdReqd &&
+      userRegisterFormValues.name !='' &&
+      userRegisterFormValues.email !='' &&
+      userRegisterFormValues.phone !='' &&
+      hashedPassword !='' &&
+      userRegisterFormValues.address !='' &&
+      userRegisterFormValues.city !='' &&
+      userRegisterFormValues.province !='' &&
+      userRegisterFormValues.postalCode !='' &&
+      userRegisterFormValues.country !='' &&
       correctname &&
       correctcity &&
       correctcountry &&
