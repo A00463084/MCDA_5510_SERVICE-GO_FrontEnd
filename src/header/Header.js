@@ -60,12 +60,23 @@ const Header = (props) => {
     e.preventDefault();
     setUserNmReqd(userLoginFormValues.email === "" ? true : false);
     setLoginPwdReqd(userLoginFormValues.password === "" ? true : false);
+    let hashedPassword = "";
+    if (!loginPwdReqd) {
+      hashedPassword = bcrypt.hashSync(
+        userLoginFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+    }
     fetch(process.env.REACT_APP_LOGIN, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",
       },
+      body: JSON.stringify({
+        email: userLoginFormValues.email,
+        password: hashedPassword,
+      }),
     })
       .then((response) => {
         response.json();
@@ -75,12 +86,8 @@ const Header = (props) => {
         if (response.status === "ACTIVE") {
           setLoggedIn(true);
           props.isLoggedIn(true);
-          const hashedPassword = bcrypt.hashSync(
-            userLoginFormValues.password,
-            "$2a$10$CwTycUXWue0Thq9StjUM0u"
-          );
-          console.log(hashedPassword);
           handleCloseRegisterModal();
+          console.log("Login " + response.status);
         }
       })
       .catch(function (error) {
@@ -185,19 +192,39 @@ const Header = (props) => {
       postal_code: userRegisterFormValues.postalCode,
       country: userRegisterFormValues.country,
     });
-    console.log(signupData, process.env.REACT_APP_REGISTER);
-    fetch(process.env.REACT_APP_REGISTER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-      body: signupData,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-      });
+
+    if (
+      nameReqd &&
+      emailReqd &&
+      addrReqd &&
+      cityReqd &&
+      countryReqd &&
+      postalCodeReqd &&
+      provinceReqd &&
+      phoneReqd &&
+      registerPwdReqd &&
+      correctname &&
+      correctcity &&
+      correctcountry &&
+      correctprovince &&
+      correctpostalcode &&
+      correctphone &&
+      correctemail
+    ) {
+      fetch(process.env.REACT_APP_REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        body: signupData,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          setSuccessRegistration(response.status === "ACTIVE" ? true : false);
+          console.log(response.status);
+        });
+    }
   };
 
   const logout = (e) => {
@@ -295,15 +322,15 @@ const Header = (props) => {
         {ModalTab === 0 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="username">Email</InputLabel>
+              <InputLabel htmlFor="email">Email</InputLabel>
               <Input
-                id="username"
+                id="email"
                 type="text"
-                value={userLoginFormValues.username}
+                value={userLoginFormValues.email}
                 onChange={(e) => {
                   setUserLoginFormValues({
                     ...userLoginFormValues,
-                    username: e.target.value,
+                    email: e.target.value,
                   });
                 }}
               />
