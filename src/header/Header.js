@@ -90,6 +90,7 @@ const Header = (props) => {
            handleCloseRegisterModal();
            console.log("Login " + response);
            localStorage.setItem("email", userLoginFormValues.email);
+           localStorage.setItem("name",response[0].name);
          }
       })
       .catch(function (error) {

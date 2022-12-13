@@ -1,12 +1,14 @@
+import { ContactSupportOutlined } from "@material-ui/icons";
 import React, { useState, useEffect } from "react";
 import background from "./background2.jpg";
 import "./Home.css";
+
 
 const Profile = () => {
 
     const [bookings, setBookings] = useState([]);
 
-    const [isempty, setStatus] = useState([false]);
+    const [isempty, setIsempty] = useState(false);
 
     useEffect(() => {
         fetch(process.env.REACT_APP_ORDERS, {
@@ -25,11 +27,13 @@ const Profile = () => {
                 return response.json();
             })
             .then((data) => {
+                console.log("test")
                 console.log(data);
                 setBookings(data);
-                if(Object.hasOwn(data,"Status"))
+                if(Object.hasOwn(data[0],"Status"))
                 {
-                    setStatus(true);
+                    console.log("comint to this block");
+                    setIsempty(true);
                 }
                 console.log(bookings);
 
@@ -37,8 +41,6 @@ const Profile = () => {
             .catch(function (error) {
                 console.error(error);
             });
-
-
     },[])
 
 
@@ -47,6 +49,10 @@ const Profile = () => {
         <div>
             <div>
                 <img className="bg" src={background} alt="Background image" />
+            </div>
+            <div>
+                    <h1><i>Hello {localStorage.getItem("name")}</i></h1>
+                    
             </div>
             <div>
                 <h1><i>My Bookings</i></h1>
@@ -73,9 +79,6 @@ const Profile = () => {
                 {isempty && (
                  <h3>No Orders </h3>
               )}
-            </div>
-            <div>
-                <h1><i>Edit Profile</i></h1>
             </div>
         </div>
 
