@@ -68,10 +68,11 @@ const Header = (props) => {
       );
     }
     fetch(process.env.REACT_APP_LOGIN, {
-      method: "GET",
+      method: "POST",
       headers: {
+        "Accept":  "application/json; charset=utf-8",
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
+        "Cache-Control": "no-cache"
       },
       body: JSON.stringify({
         email: userLoginFormValues.email,
@@ -79,16 +80,17 @@ const Header = (props) => {
       }),
     })
       .then((response) => {
-        response.json();
+        return response.json();
       })
-      .then((data) => localStorage.setItem("email", data))
       .then((response) => {
-        if (response.status === "ACTIVE") {
-          setLoggedIn(true);
-          props.isLoggedIn(true);
-          handleCloseRegisterModal();
-          console.log("Login " + response.status);
-        }
+        console.log(response[0].Status)
+        if (response[0].Status === "User Login Successful") {
+           setLoggedIn(true);
+           props.isLoggedIn(true);
+           handleCloseRegisterModal();
+           console.log("Login " + response);
+           localStorage.setItem("email", userLoginFormValues.email);
+         }
       })
       .catch(function (error) {
         console.error(error);
@@ -231,8 +233,10 @@ const Header = (props) => {
       })
         .then((response) => response.json())
         .then((response) => {
-          setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-          console.log(response.status);
+          if (response[0].Status === "User Signup Successful")
+          {
+          setSuccessRegistration(true);
+          }
         });
     }
   };
