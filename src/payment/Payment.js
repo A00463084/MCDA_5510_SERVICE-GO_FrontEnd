@@ -11,7 +11,7 @@ const Payment = (props) => {
     return (
         <div>
             <Elements stripe={stripePromise}>
-                <PaymentForm />
+                <PaymentForm cost={props.cost} />
             </Elements>
         </div>
     )

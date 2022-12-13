@@ -32,7 +32,7 @@ const Employee = (props) => {
         </Button>
       </div>
       :
-      <Payment />
+      <Payment cost={(parseInt(props.cost)*100)} />
     }
     </>
   );
