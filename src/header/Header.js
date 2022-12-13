@@ -60,28 +60,37 @@ const Header = (props) => {
     e.preventDefault();
     setUserNmReqd(userLoginFormValues.email === "" ? true : false);
     setLoginPwdReqd(userLoginFormValues.password === "" ? true : false);
+    let hashedPassword = "";
+    if (!loginPwdReqd) {
+      hashedPassword = bcrypt.hashSync(
+        userLoginFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
+      );
+    }
     fetch(process.env.REACT_APP_LOGIN, {
-      method: "GET",
+      method: "POST",
       headers: {
+        "Accept":  "application/json; charset=utf-8",
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
+        "Cache-Control": "no-cache"
       },
+      body: JSON.stringify({
+        email: userLoginFormValues.email,
+        password: hashedPassword,
+      }),
     })
       .then((response) => {
-        response.json();
+        return response.json();
       })
-      .then((data) => localStorage.setItem("email", data))
       .then((response) => {
-        if (response.status === "ACTIVE") {
-          setLoggedIn(true);
-          props.isLoggedIn(true);
-          const hashedPassword = bcrypt.hashSync(
-            userLoginFormValues.password,
-            "$2a$10$CwTycUXWue0Thq9StjUM0u"
-          );
-          console.log(hashedPassword);
-          handleCloseRegisterModal();
-        }
+        console.log(response[0].Status)
+        if (response[0].Status === "User Login Successful") {
+           setLoggedIn(true);
+           props.isLoggedIn(true);
+           handleCloseRegisterModal();
+           console.log("Login " + response);
+           localStorage.setItem("email", userLoginFormValues.email);
+         }
       })
       .catch(function (error) {
         console.error(error);
@@ -185,19 +194,51 @@ const Header = (props) => {
       postal_code: userRegisterFormValues.postalCode,
       country: userRegisterFormValues.country,
     });
-    console.log(signupData, process.env.REACT_APP_REGISTER);
-    fetch(process.env.REACT_APP_REGISTER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-      body: signupData,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-      });
+
+    console.log(nameReqd,emailReqd,addrReqd,cityReqd,countryReqd,postalCodeReqd,provinceReqd,phoneReqd,registerPwdReqd);
+    console.log("correct name",correctname);
+    console.log("correct city",correctcity);
+    console.log("correct province",correctprovince);
+    console.log("correct country",correctcountry);
+    console.log("correct po",correctpostalcode);
+    console.log("correct email",correctemail);
+    console.log("correct phone",correctphone);
+    
+
+    if (
+      userRegisterFormValues.name !='' &&
+      userRegisterFormValues.email !='' &&
+      userRegisterFormValues.phone !='' &&
+      hashedPassword !='' &&
+      userRegisterFormValues.address !='' &&
+      userRegisterFormValues.city !='' &&
+      userRegisterFormValues.province !='' &&
+      userRegisterFormValues.postalCode !='' &&
+      userRegisterFormValues.country !='' &&
+      correctname &&
+      correctcity &&
+      correctcountry &&
+      correctprovince &&
+      correctpostalcode &&
+      correctphone &&
+      correctemail
+    ) {
+      fetch(process.env.REACT_APP_REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        body: signupData,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response[0].Status === "User Signup Successful")
+          {
+          setSuccessRegistration(true);
+          }
+        });
+    }
   };
 
   const logout = (e) => {
@@ -295,15 +336,15 @@ const Header = (props) => {
         {ModalTab === 0 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="username">Email</InputLabel>
+              <InputLabel htmlFor="email">Email</InputLabel>
               <Input
-                id="username"
+                id="email"
                 type="text"
-                value={userLoginFormValues.username}
+                value={userLoginFormValues.email}
                 onChange={(e) => {
                   setUserLoginFormValues({
                     ...userLoginFormValues,
-                    username: e.target.value,
+                    email: e.target.value,
                   });
                 }}
               />

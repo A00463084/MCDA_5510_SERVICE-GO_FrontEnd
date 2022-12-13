@@ -10,7 +10,8 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import employeesData from "../data/employees-data";
 import Employee from "../Employee";
-import logo from "../Homepage_design.jpg"
+import logo from "../Homepage_design.jpg";
+import Profile from './Profile.js';
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
@@ -93,7 +94,7 @@ const Home = (props) => {
           <img alt="Homepage Design" src={logo} style={{ minHeight: '100%' }}/>
         </Fragment>
       ) : profile === true ? (
-        <h1> Your profile is under construction</h1>
+        <Profile/>
       ) : (
         <div>
           <h1>Welcome User</h1>
