@@ -15,7 +15,7 @@ import { type } from "@testing-library/user-event/dist/type";
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userLoginFormValues, setUserLoginFormValues] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [userRegisterFormValues, setUserRegisterFormValues] = useState({
@@ -54,24 +54,47 @@ const Header = (props) => {
   const [correctpostalcode, setCorrectPostalcode] = useState(true);
   const [correctphone, setCorrectPhone] = useState(true);
   const [correctemail, setCorrectEmail] = useState(true);
- //End Part
+  //End Part
 
   const onSubmitLogin = (e) => {
     e.preventDefault();
-    setUserNmReqd(userLoginFormValues.username === "" ? true : false);
+    setUserNmReqd(userLoginFormValues.email === "" ? true : false);
     setLoginPwdReqd(userLoginFormValues.password === "" ? true : false);
-    if (
-      userLoginFormValues.username !== "" &&
-      userLoginFormValues.password !== ""
-    ) {
-      setLoggedIn(true);
-      props.isLoggedIn(true);
-      const hashedPassword = bcrypt.hashSync(
+    let hashedPassword = "";
+    if (!loginPwdReqd) {
+      hashedPassword = bcrypt.hashSync(
         userLoginFormValues.password,
         "$2a$10$CwTycUXWue0Thq9StjUM0u"
       );
-      console.log(hashedPassword);
     }
+    fetch(process.env.REACT_APP_LOGIN, {
+      method: "POST",
+      headers: {
+        "Accept":  "application/json; charset=utf-8",
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache"
+      },
+      body: JSON.stringify({
+        email: userLoginFormValues.email,
+        password: hashedPassword,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        console.log(response[0].Status)
+        if (response[0].Status === "User Login Successful") {
+           setLoggedIn(true);
+           props.isLoggedIn(true);
+           handleCloseRegisterModal();
+           console.log("Login " + response);
+           localStorage.setItem("email", userLoginFormValues.email);
+         }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -79,9 +102,6 @@ const Header = (props) => {
   };
 
   const onRegistration = (e) => {
-
-  
-
     e.preventDefault();
     setNameReqd(userRegisterFormValues.name === "" ? true : false);
     setEmailReqd(userRegisterFormValues.email === "" ? true : false);
@@ -95,80 +115,72 @@ const Header = (props) => {
 
     //Extra Form Validation Functions Part: Francis Alex
 
-    const reg = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
-    const reg_pc= RegExp(/^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g);
-    const reg_phone= RegExp(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g)
-    const reg_email=RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/g)
+    const reg_em = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
 
-    if(reg.test(userRegisterFormValues.name)==false)
-    {
+    const reg_cit = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_pro = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_count = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+
+    const reg_pc = RegExp(
+      /^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g
+    );
+    const reg_phone = RegExp(
+      /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g
+    );
+    const reg_email = RegExp(
+      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/g
+    );
+
+    if (reg_em.test(userRegisterFormValues.name) == false) {
       setCorrectName(false);
-    }else{
-      
+    } else {
       setCorrectName(true);
     }
-    if(reg.test(userRegisterFormValues.city)==false)
-    {
+    if (reg_cit.test(userRegisterFormValues.city) == false) {
       setCorrectCity(false);
-    }else{
-      
+    } else {
       setCorrectCity(true);
     }
-    if(reg.test(userRegisterFormValues.province)==false)
-    {
+    if (reg_pro.test(userRegisterFormValues.province) == false) {
       setCorrectProvince(false);
-    }else
-    {
-      
+    } else {
       setCorrectProvince(true);
     }
-    if(reg.test(userRegisterFormValues.country)==false)
-    {
+    if (reg_count.test(userRegisterFormValues.country) == false) {
       setCorrectCountry(false);
-    }else
-    {
-      
+    } else {
       setCorrectCountry(true);
     }
 
-    if(reg_pc.test(userRegisterFormValues.postalCode)==false)
-    {
-      setCorrectPostalcode(false)
-    }else
-    {
-      
-      setCorrectPostalcode(true)
+    if (reg_pc.test(userRegisterFormValues.postalCode) == false) {
+      setCorrectPostalcode(false);
+    } else {
+      setCorrectPostalcode(true);
     }
 
-    if(reg_phone.test(userRegisterFormValues.phone)==false)
-    {
-      setCorrectPhone(false)
-    }else
-    {
-      
-      setCorrectPhone(true)
+    if (reg_phone.test(userRegisterFormValues.phone) == false) {
+      setCorrectPhone(false);
+    } else {
+      setCorrectPhone(true);
     }
 
-    if(reg_email.test(userRegisterFormValues.email)==false)
-    {
-      setCorrectEmail(false)
-    }else
-    {
-      
-      setCorrectEmail(true)
+    if (reg_email.test(userRegisterFormValues.email) == false) {
+      setCorrectEmail(false);
+    } else {
+      setCorrectEmail(true);
     }
 
-
-      //Ending
-
+    //Ending
 
     let hashedPassword = "";
     console.log(registerPwdReqd);
     if (!registerPwdReqd) {
       hashedPassword = userRegisterFormValues.password;
       hashedPassword = bcrypt.hashSync(
-         userRegisterFormValues.password,
-         "$2a$10$CwTycUXWue0Thq9StjUM0u"
+        userRegisterFormValues.password,
+        "$2a$10$CwTycUXWue0Thq9StjUM0u"
       );
     }
     let signupData = JSON.stringify({
@@ -182,19 +194,51 @@ const Header = (props) => {
       postal_code: userRegisterFormValues.postalCode,
       country: userRegisterFormValues.country,
     });
-    console.log(signupData, process.env.REACT_APP_REGISTER);
-    fetch(process.env.REACT_APP_REGISTER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-      body: signupData,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setSuccessRegistration(response.status === "ACTIVE" ? true : false);
-      });
+
+    console.log(nameReqd,emailReqd,addrReqd,cityReqd,countryReqd,postalCodeReqd,provinceReqd,phoneReqd,registerPwdReqd);
+    console.log("correct name",correctname);
+    console.log("correct city",correctcity);
+    console.log("correct province",correctprovince);
+    console.log("correct country",correctcountry);
+    console.log("correct po",correctpostalcode);
+    console.log("correct email",correctemail);
+    console.log("correct phone",correctphone);
+    
+
+    if (
+      userRegisterFormValues.name !='' &&
+      userRegisterFormValues.email !='' &&
+      userRegisterFormValues.phone !='' &&
+      hashedPassword !='' &&
+      userRegisterFormValues.address !='' &&
+      userRegisterFormValues.city !='' &&
+      userRegisterFormValues.province !='' &&
+      userRegisterFormValues.postalCode !='' &&
+      userRegisterFormValues.country !='' &&
+      correctname &&
+      correctcity &&
+      correctcountry &&
+      correctprovince &&
+      correctpostalcode &&
+      correctphone &&
+      correctemail
+    ) {
+      fetch(process.env.REACT_APP_REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        body: signupData,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response[0].Status === "User Signup Successful")
+          {
+          setSuccessRegistration(true);
+          }
+        });
+    }
   };
 
   const logout = (e) => {
@@ -292,15 +336,15 @@ const Header = (props) => {
         {ModalTab === 0 && (
           <div style={{ padding: 0, textAlign: "center" }}>
             <FormControl required>
-              <InputLabel htmlFor="username">Email</InputLabel>
+              <InputLabel htmlFor="email">Email</InputLabel>
               <Input
-                id="username"
+                id="email"
                 type="text"
-                value={userLoginFormValues.username}
+                value={userLoginFormValues.email}
                 onChange={(e) => {
                   setUserLoginFormValues({
                     ...userLoginFormValues,
-                    username: e.target.value,
+                    email: e.target.value,
                   });
                 }}
               />
@@ -368,7 +412,10 @@ const Header = (props) => {
               )}
               {!correctname && !nameReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Name: Name should not contain numbers and special symbols</span>
+                  <span className="red">
+                    Invalid Name: Name should not contain numbers and special
+                    symbols
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -393,7 +440,9 @@ const Header = (props) => {
               )}
               {!correctemail && !emailReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Email: Enter Correct Email Address</span>
+                  <span className="red">
+                    Invalid Email: Enter Correct Email Address
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -458,7 +507,10 @@ const Header = (props) => {
               )}
               {!correctcity && !cityReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid City: City should not contain numbers and special symbols</span>
+                  <span className="red">
+                    Invalid City: City should not contain numbers and special
+                    symbols
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -483,7 +535,10 @@ const Header = (props) => {
               )}
               {!correctprovince && !provinceReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Province: Province should not contain numbers and special symbols</span>
+                  <span className="red">
+                    Invalid Province: Province should not contain numbers and
+                    special symbols
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -508,7 +563,10 @@ const Header = (props) => {
               )}
               {!correctcountry && !countryReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Country: Country should not contain numbers and special symbols</span>
+                  <span className="red">
+                    Invalid Country: Country should not contain numbers and
+                    special symbols
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -533,7 +591,9 @@ const Header = (props) => {
               )}
               {!correctpostalcode && !postalCodeReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Postal Code: Please Enter Valid Postal Code</span>
+                  <span className="red">
+                    Invalid Postal Code: Please Enter Valid Postal Code
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
@@ -558,7 +618,9 @@ const Header = (props) => {
               )}
               {!correctphone && !phoneReqd && (
                 <FormHelperText>
-                  <span className="red">Invalid Phone Number: Please Enter Valid Phone Number</span>
+                  <span className="red">
+                    Invalid Phone Number: Please Enter Valid Phone Number
+                  </span>
                 </FormHelperText>
               )}
             </FormControl>
