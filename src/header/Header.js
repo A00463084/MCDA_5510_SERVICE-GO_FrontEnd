@@ -67,12 +67,12 @@ const Header = (props) => {
         "$2a$10$CwTycUXWue0Thq9StjUM0u"
       );
     }
-    fetch(process.env.REACT_APP_LOGIN, {
+    fetch(process.env.REACT_APP_DOMAIN + "Main/login", {
       method: "POST",
       headers: {
-        "Accept":  "application/json; charset=utf-8",
+        Accept: "application/json; charset=utf-8",
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache"
+        "Cache-Control": "no-cache",
       },
       body: JSON.stringify({
         email: userLoginFormValues.email,
@@ -83,15 +83,15 @@ const Header = (props) => {
         return response.json();
       })
       .then((response) => {
-        console.log(response[0].Status)
+        console.log(response[0].Status);
         if (response[0].Status === "User Login Successful") {
-           setLoggedIn(true);
-           props.isLoggedIn(true);
-           handleCloseRegisterModal();
-           console.log("Login " + response);
-           localStorage.setItem("email", userLoginFormValues.email);
-           localStorage.setItem("name",response[0].name);
-         }
+          setLoggedIn(true);
+          props.isLoggedIn(true);
+          handleCloseRegisterModal();
+          console.log("Login " + response);
+          localStorage.setItem("email", userLoginFormValues.email);
+          localStorage.setItem("name", response[0].name);
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -196,26 +196,35 @@ const Header = (props) => {
       country: userRegisterFormValues.country,
     });
 
-    console.log(nameReqd,emailReqd,addrReqd,cityReqd,countryReqd,postalCodeReqd,provinceReqd,phoneReqd,registerPwdReqd);
-    console.log("correct name",correctname);
-    console.log("correct city",correctcity);
-    console.log("correct province",correctprovince);
-    console.log("correct country",correctcountry);
-    console.log("correct po",correctpostalcode);
-    console.log("correct email",correctemail);
-    console.log("correct phone",correctphone);
-    
+    console.log(
+      nameReqd,
+      emailReqd,
+      addrReqd,
+      cityReqd,
+      countryReqd,
+      postalCodeReqd,
+      provinceReqd,
+      phoneReqd,
+      registerPwdReqd
+    );
+    console.log("correct name", correctname);
+    console.log("correct city", correctcity);
+    console.log("correct province", correctprovince);
+    console.log("correct country", correctcountry);
+    console.log("correct po", correctpostalcode);
+    console.log("correct email", correctemail);
+    console.log("correct phone", correctphone);
 
     if (
-      userRegisterFormValues.name !='' &&
-      userRegisterFormValues.email !='' &&
-      userRegisterFormValues.phone !='' &&
-      hashedPassword !='' &&
-      userRegisterFormValues.address !='' &&
-      userRegisterFormValues.city !='' &&
-      userRegisterFormValues.province !='' &&
-      userRegisterFormValues.postalCode !='' &&
-      userRegisterFormValues.country !='' &&
+      userRegisterFormValues.name != "" &&
+      userRegisterFormValues.email != "" &&
+      userRegisterFormValues.phone != "" &&
+      hashedPassword != "" &&
+      userRegisterFormValues.address != "" &&
+      userRegisterFormValues.city != "" &&
+      userRegisterFormValues.province != "" &&
+      userRegisterFormValues.postalCode != "" &&
+      userRegisterFormValues.country != "" &&
       correctname &&
       correctcity &&
       correctcountry &&
@@ -224,7 +233,7 @@ const Header = (props) => {
       correctphone &&
       correctemail
     ) {
-      fetch(process.env.REACT_APP_REGISTER, {
+      fetch(process.env.REACT_APP_DOMAIN + "/Main/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -234,9 +243,8 @@ const Header = (props) => {
       })
         .then((response) => response.json())
         .then((response) => {
-          if (response[0].Status === "User Signup Successful")
-          {
-          setSuccessRegistration(true);
+          if (response[0].Status === "User Signup Successful") {
+            setSuccessRegistration(true);
           }
         });
     }

@@ -11,7 +11,7 @@ import Stack from "@mui/material/Stack";
 import employeesData from "../data/employees-data";
 import Employee from "../Employee";
 import logo from "../Homepage_design.jpg";
-import Profile from './Profile.js';
+import Profile from "./Profile.js";
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
@@ -20,6 +20,11 @@ const Home = (props) => {
   const [list, showList] = useState(false);
   const [employees, setEmployees] = useState(employeesData);
   const anchorRef = useRef(null);
+  const [userInputs, setUserInputs] = useState({
+    category: "",
+    date: "",
+    timeslot: "",
+  });
   useEffect(() => {
     setIsLoggedIn(props.loggedIn);
   }, [props.loggedIn]);
@@ -41,6 +46,31 @@ const Home = (props) => {
     showList(false);
   };
 
+  const submitUserInput = (e) => {
+    console.log(userInputs);
+    fetch(process.env.REACT_APP_DOMAIN + "Main/employeelist", {
+      method: "POST",
+      headers: {
+        Accept: "application/json; charset=utf-8",
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+      },
+      body: JSON.stringify({
+        category: userInputs.category,
+        date: userInputs.date,
+        timeslot: userInputs.timeslot,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
   const openPlumbers = (e) => {
     let filteredEmployees = employeesData.filter((employee) => {
       return employee.category === "Plumber";
@@ -91,14 +121,60 @@ const Home = (props) => {
     <div>
       {isLoggedIn === false ? (
         <Fragment>
-          <img alt="Homepage Design" src={logo} style={{ minHeight: '100%' }}/>
+          <img alt="Homepage Design" src={logo} style={{ minHeight: "100%" }} />
         </Fragment>
       ) : profile === true ? (
-        <Profile/>
+        <Profile />
       ) : (
         <div>
           <h1>Welcome User</h1>
-          <Stack spacing={2}>
+          <label htmlFor="category">Choose a Category:</label>
+          <select
+            name="category"
+            id="category"
+            onChange={(e) =>
+              setUserInputs({ ...userInputs, category: e.target.value })
+            }
+          >
+            <option value="plumbing">Plumbing</option>
+            <option value="electrician">Electrician</option>
+            <option value="painting">Painting</option>
+            <option value="cleaning">Cleaning</option>
+          </select>
+          <label htmlFor="date">Choose a Date:</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            onChange={(e) => {
+              setUserInputs({ ...userInputs, date: e.target.value });
+            }}
+          />
+          <label htmlFor="timeslot">Choose a Time Slot:</label>
+          <select
+            name="timeslot"
+            id="timeslot"
+            onChange={(e) =>
+              setUserInputs({ ...userInputs, timeslot: e.target.value })
+            }
+          >
+            <option>10-11</option>
+            <option>11-12</option>
+            <option>12-1</option>
+            <option>1-2</option>
+            <option>2-3</option>
+            <option>3-4</option>
+            <option>4-5</option>
+            <option>5-6</option>
+          </select>
+          <Button
+            onClick={(e) => submitUserInput(e)}
+            variant="contained"
+            style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
+          >
+            Submit
+          </Button>
+          {/* <Stack spacing={2}>
             <div>
               <Button
                 ref={anchorRef}
@@ -148,7 +224,7 @@ const Home = (props) => {
                 )}
               </Popper>
             </div>
-          </Stack>
+          </Stack> */}
           {list === true && employees.length > 0 ? (
             <div>
               {employees.map((employee) => {
