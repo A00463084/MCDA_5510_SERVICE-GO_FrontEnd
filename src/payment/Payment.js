@@ -12,7 +12,7 @@ const Payment = (props) => {
         <div>
             <Elements stripe={stripePromise}>
                 <div style={{padding: "0 10%"}}>
-                    <PaymentForm cost={props.cost} />
+                    <PaymentForm order={props.order} />
                 </div>
             </Elements>
         </div>

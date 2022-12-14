@@ -23,7 +23,7 @@ const PaymentForm = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                amount: props.cost,
+                amount: parseInt(props.order.cost)*100,
                 paymentMethodType: 'card',
                 currency: 'cad'
             }),
@@ -52,9 +52,27 @@ const PaymentForm = (props) => {
             return;
         }
 
+        console.log(`PaymentIntent (${paymentIntent.id}): ${paymentIntent.status}`)
+
         setPaymentStatus(paymentIntent.status)
 
-        console.log(`PaymentIntent (${paymentIntent.id}): ${paymentIntent.status}`)
+        if(paymentIntent.status === "succeeded") {
+            console.log("Creating order")
+            
+            fetch('https://localhost:7190/booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                date: "01-01-2024", // Has to accept filter value
+                time_slot: "10-1", // Has to accept filter value
+                emp_id: parseInt(props.order.emp_id),
+                user_id: 3, // Has to accept user session id
+            }),
+            }).then(r => {return r.json()})
+            .then(r => {console.log(r)});
+        }
 
     }
 

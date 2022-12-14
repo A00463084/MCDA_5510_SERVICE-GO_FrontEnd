@@ -155,6 +155,7 @@ const Home = (props) => {
                 return (
                   <Employee
                     key={employee.name}
+                    emp_id={employee.id}
                     name={employee.name}
                     rating={employee.rating}
                     cost={employee.cost}
