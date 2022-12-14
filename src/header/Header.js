@@ -196,6 +196,8 @@ const Header = (props) => {
       country: userRegisterFormValues.country,
     });
 
+    console.log(signupData);
+
     console.log(
       nameReqd,
       emailReqd,
@@ -233,7 +235,7 @@ const Header = (props) => {
       correctphone &&
       correctemail
     ) {
-      fetch(process.env.REACT_APP_DOMAIN + "/Main/signup", {
+      fetch(process.env.REACT_APP_DOMAIN + "Main/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

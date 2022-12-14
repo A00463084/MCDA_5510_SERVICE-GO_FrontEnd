@@ -42,6 +42,9 @@ const Profile = () => {
         <img className="bg" src={background} alt="Background image" />
       </div>
       <div>
+        <h1><i>Hello {localStorage.getItem("name")}</i></h1>
+      </div>
+      <div>
         <h1>
           <i>My Bookings</i>
         </h1>
@@ -66,11 +69,6 @@ const Profile = () => {
           })}
         </table>
         {isempty && <h3>No Orders </h3>}
-      </div>
-      <div>
-        <h1>
-          <i>Edit Profile</i>
-        </h1>
       </div>
     </div>
   );
