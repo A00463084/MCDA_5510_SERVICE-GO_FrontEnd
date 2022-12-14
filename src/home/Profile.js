@@ -6,7 +6,7 @@ import "./Home.css";
 const Profile = () => {
   const [bookings, setBookings] = useState([]);
 
-  const [isempty, setIsEmpty] = useState([false]);
+  const [isempty, setIsEmpty] = useState(false);
 
   useEffect(() => {
     fetch(process.env.REACT_APP_DOMAIN + "Main/userprofile/orderhistory", {

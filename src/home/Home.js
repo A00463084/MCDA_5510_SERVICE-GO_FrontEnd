@@ -73,6 +73,7 @@ const Home = (props) => {
       ) : (
         <div>
           <h1>Welcome {localStorage.getItem("name")}</h1>
+          <br></br>
           <InputLabel htmlFor="category">Choose a Category: </InputLabel>
           <Select
             name="category"
@@ -87,6 +88,8 @@ const Home = (props) => {
             <MenuItem value="painting">Painting</MenuItem>
             <MenuItem value="cleaning">Cleaning</MenuItem>
           </Select>
+          <br></br>
+          <br></br>
           <InputLabel htmlFor="date">Choose a Date:</InputLabel>
           <TextField
             type="date"
@@ -96,6 +99,8 @@ const Home = (props) => {
               setUserInputs({ ...userInputs, date: e.target.value });
             }}
           />
+          <br></br>
+          <br></br>
           <InputLabel htmlFor="timeslot">Choose a Time Slot: </InputLabel>
           <Select
             style={{ width: 100 }}
@@ -106,14 +111,15 @@ const Home = (props) => {
             }
           >
             <MenuItem value="10-11">10-11</MenuItem>
-            <MenuItem value="10-11">11-12</MenuItem>
-            <MenuItem value="10-11">12-1</MenuItem>
-            <MenuItem value="10-11">1-2</MenuItem>
-            <MenuItem value="10-11">2-3</MenuItem>
-            <MenuItem value="10-11">3-4</MenuItem>
-            <MenuItem value="10-11">4-5</MenuItem>
-            <MenuItem value="10-11">5-6</MenuItem>
+            <MenuItem value="11-12">11-12</MenuItem>
+            <MenuItem value="12-1">12-1</MenuItem>
+            <MenuItem value="1-2">1-2</MenuItem>
+            <MenuItem value="2-3">2-3</MenuItem>
+            <MenuItem value="3-4">3-4</MenuItem>
+            <MenuItem value="4-5">4-5</MenuItem>
+            <MenuItem value="5-6">5-6</MenuItem>
           </Select>
+          <br></br>
           <br></br>
           <Button
             onClick={(e) => submitUserInput(e)}

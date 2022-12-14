@@ -91,6 +91,7 @@ const Header = (props) => {
           console.log("Login " + response);
           localStorage.setItem("email", userLoginFormValues.email);
           localStorage.setItem("name", response[0].name);
+          localStorage.setItem("user_id", response[0].id);
         }
       })
       .catch(function (error) {
