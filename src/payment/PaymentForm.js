@@ -7,6 +7,7 @@ const PaymentForm = (props) => {
 
     const [stripeErrorMsg, setStripeErrorMsg] = useState("")
     const [backendErrorMsg, setBackendErrorMsg] = useState("")
+    const [paymentStatus, setPaymentStatus] = useState("")
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,6 +52,8 @@ const PaymentForm = (props) => {
             return;
         }
 
+        setPaymentStatus(paymentIntent.status)
+
         console.log(`PaymentIntent (${paymentIntent.id}): ${paymentIntent.status}`)
 
     }
@@ -59,27 +62,34 @@ const PaymentForm = (props) => {
     return (
         <div>
             <h3 style={{textAlign: "center"}}>Checkout</h3>
-                <form id="payment-form" onSubmit={handleSubmit}>
-                <div style={{padding: "10px 20px",border: "1px solid grey", borderRadius: "10px"}}>
-                    <CardElement />
+                { paymentStatus !== "succeeded" ?
+                    <form id="payment-form" onSubmit={handleSubmit}>
+                    <div style={{padding: "10px 20px",border: "1px solid grey", borderRadius: "10px"}}>
+                        <CardElement />
+                        </div>
+                        { stripeErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
+                        { backendErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
+                        <br/>
+                        <button 
+                            style={{
+                                fontSize: "15px",
+                                marginLeft: "45%", 
+                                padding: "10px 20px",
+                                backgroundColor: "#0082ff",
+                                color: "white",
+                                border: "1px solid white",
+                                borderRadius: "5px"
+                            }}
+                        >
+                            Pay
+                        </button>
+                    </form>
+                    :
+                    <div style={{textAlign: "center", paddingTop: "10px"}}>
+                        <h3 style={{color: "green"}}>Payment Sucessful</h3>
+                        <p style={{color: "grey"}}>Click anywhere outside to close this window</p>
                     </div>
-                    { stripeErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
-                    { backendErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
-                    <br/>
-                    <button 
-                        style={{
-                            fontSize: "15px",
-                            marginLeft: "45%", 
-                            padding: "10px 20px",
-                            backgroundColor: "#0082ff",
-                            color: "white",
-                            border: "1px solid white",
-                            borderRadius: "5px"
-                        }}
-                    >
-                        Pay
-                    </button>
-                </form>
+                }
             
         </div>
     )
