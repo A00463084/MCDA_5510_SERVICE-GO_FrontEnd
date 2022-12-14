@@ -1,19 +1,17 @@
 import React, { Component, useState } from "react";
 import { Button } from "@material-ui/core";
 import Payment from './payment/Payment'
+import Modal from "react-modal";
 
 const Employee = (props) => {
 
-  const [pay, setPay] = useState(false)
+  // const [pay, setPay] = useState(false)
+  const [openRegistrationModal, setOpenRegistrationModal] = useState(false);
 
-  const bookEmployee = (e) => {
-    setPay(true)
-    console.log("Employee Booked");
-  };
+  const handleCloseRegisterModal = () => setOpenRegistrationModal(false);
 
   return (
     <>
-    {pay === false ?
       <div className="employee-container" key={props.name}>
         <img width={125} src={props.iconUrl} />
         <div style={{ textAlign: "left" }}>
@@ -24,16 +22,34 @@ const Employee = (props) => {
           <h4>{props.email}</h4>
         </div>
         <Button
-          onClick={(e) => bookEmployee(e)}
+          onClick={(e) => setOpenRegistrationModal(true)}
           variant="contained"
           style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
         >
           Book
         </Button>
       </div>
-      :
+      
+      <Modal
+        ariaHideApp={false}
+        isOpen={openRegistrationModal}
+        contentLabel="Login"
+        onRequestClose={handleCloseRegisterModal}
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            height: "30%",
+            width: "40%",
+          },
+        }}
+      >
       <Payment cost={(parseInt(props.cost)*100)} />
-    }
+      </Modal>
     </>
   );
 };
