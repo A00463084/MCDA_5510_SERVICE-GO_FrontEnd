@@ -43,21 +43,14 @@ const Employee = (props) => {
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
             height: "30%",
-            width: "40%",
+            width: "40%"
           },
         }}
       >
-      <Payment cost={(parseInt(props.cost)*100)} />
+        <Payment cost={(parseInt(props.cost)*100)} />
       </Modal>
     </>
   );
 };
 
 export default Employee;
-
-/**
- * Topics you might also like:
- *      - Object Destructuring -> https://dmitripavlutin.com/javascript-object-destructuring/
- *      - Template Literals -> https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
- *      - Rendering Elements -> https://reactjs.org/docs/rendering-elements.html
- */
