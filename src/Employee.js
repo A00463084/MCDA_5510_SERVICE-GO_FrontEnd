@@ -15,6 +15,7 @@ const Employee = (props) => {
         <img width={125} src={props.iconUrl} />
         <div style={{ textAlign: "left" }}>
           <h3>{props.name}</h3>
+          <h3>{props.emp_id}</h3>
           <h4>{props.rating}</h4>
           <h4>{props.cost}</h4>
           <h4>{props.phone}</h4>
@@ -25,7 +26,7 @@ const Employee = (props) => {
           variant="contained"
           style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
         >
-          Book
+          Book 
         </Button>
       </div>
       
@@ -47,7 +48,7 @@ const Employee = (props) => {
           },
         }}
       >
-        <Payment cost={(parseInt(props.cost)*100)} />
+        <Payment order={props} />
       </Modal>
     </>
   );

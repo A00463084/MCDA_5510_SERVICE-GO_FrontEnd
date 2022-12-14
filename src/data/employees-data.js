@@ -1,5 +1,6 @@
 const employees = [
   {
+    id: 1,
     name: "Rishan",
     category: "Plumber",
     rating: "4.4",
@@ -11,6 +12,7 @@ const employees = [
       "https://upload.wikimedia.org/wikipedia/commons/5/56/Worker_icon.svg",
   },
   {
+    id: 2,
     name: "Francis",
     category: "Plumber",
     rating: "4.5",
@@ -21,6 +23,7 @@ const employees = [
       "https://upload.wikimedia.org/wikipedia/commons/5/56/Worker_icon.svg",
   },
   {
+    id: 3,
     name: "Shreerag",
     category: "Electrician",
     rating: "48",
