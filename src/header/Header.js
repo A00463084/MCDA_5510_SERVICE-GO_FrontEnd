@@ -3,14 +3,14 @@ import { Button } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./Header.css";
 import Tab from "@material-ui/core/Tab";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
 import bcrypt from "bcryptjs";
-import { Link } from "react-router-dom";
-import { type } from "@testing-library/user-event/dist/type";
 
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -554,17 +554,20 @@ const Header = (props) => {
             <br />
             <FormControl required>
               <InputLabel htmlFor="country">Country</InputLabel>
-              <Input
+              <Select
+                style={{ width: 170 }}
+                name="country"
                 id="country"
-                type="text"
-                value={userRegisterFormValues.country}
-                onChange={(e) => {
+                onChange={(e) =>
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
                     country: e.target.value,
-                  });
-                }}
-              />
+                  })
+                }
+              >
+                <MenuItem value="Canada">Canada</MenuItem>
+                <MenuItem value="US">US</MenuItem>
+              </Select>
               {countryReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
