@@ -5,10 +5,9 @@ import Modal from "react-modal";
 
 const Employee = (props) => {
 
-  // const [pay, setPay] = useState(false)
-  const [openRegistrationModal, setOpenRegistrationModal] = useState(false);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
-  const handleCloseRegisterModal = () => setOpenRegistrationModal(false);
+  const handleCloseRegisterModal = () => setOpenPaymentModal(false);
 
   return (
     <>
@@ -22,7 +21,7 @@ const Employee = (props) => {
           <h4>{props.email}</h4>
         </div>
         <Button
-          onClick={(e) => setOpenRegistrationModal(true)}
+          onClick={(e) => setOpenPaymentModal(true)}
           variant="contained"
           style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
         >
@@ -32,7 +31,7 @@ const Employee = (props) => {
       
       <Modal
         ariaHideApp={false}
-        isOpen={openRegistrationModal}
+        isOpen={openPaymentModal}
         contentLabel="Login"
         onRequestClose={handleCloseRegisterModal}
         style={{

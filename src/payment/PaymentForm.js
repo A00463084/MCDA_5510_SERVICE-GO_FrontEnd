@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useElements, CardElement, useStripe} from '@stripe/react-stripe-js'
 
 const PaymentForm = (props) => {
     const elements = useElements();
     const stripe = useStripe();
+
+    const [stripeErrorMsg, setStripeErrorMsg] = useState("")
+    const [backendErrorMsg, setBackendErrorMsg] = useState("")
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +29,7 @@ const PaymentForm = (props) => {
         }).then(r => r.json());
 
         if(backendError) {
+            setBackendErrorMsg(backendError.message)
             console.log(backendError.message);
             return;
         }
@@ -42,6 +46,7 @@ const PaymentForm = (props) => {
         )
 
         if(stripeError) {
+            setStripeErrorMsg(stripeError.message)
             console.log(stripeError.message);
             return;
         }
@@ -53,10 +58,29 @@ const PaymentForm = (props) => {
 
     return (
         <div>
-            <form id="payment-form" onSubmit={handleSubmit}>
-                <CardElement />
-                <button>Pay</button>
-            </form>
+            <h3 style={{textAlign: "center"}}>Checkout</h3>
+                <form id="payment-form" onSubmit={handleSubmit}>
+                <div style={{padding: "10px 20px",border: "1px solid grey", borderRadius: "10px"}}>
+                    <CardElement />
+                    </div>
+                    { stripeErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
+                    { backendErrorMsg !== "" ? <p style={{color: "red"}}>{stripeErrorMsg}</p> : <></> }
+                    <br/>
+                    <button 
+                        style={{
+                            fontSize: "15px",
+                            marginLeft: "45%", 
+                            padding: "10px 20px",
+                            backgroundColor: "#0082ff",
+                            color: "white",
+                            border: "1px solid white",
+                            borderRadius: "5px"
+                        }}
+                    >
+                        Pay
+                    </button>
+                </form>
+            
         </div>
     )
 }
