@@ -1,35 +1,49 @@
 import React, { Component, useState } from "react";
 import { Button } from "@material-ui/core";
-import Payment from './payment/Payment'
+import "./Employee.css";
+import Payment from "./payment/Payment";
 import Modal from "react-modal";
 
 const Employee = (props) => {
-
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
   const handleCloseRegisterModal = () => setOpenPaymentModal(false);
 
   return (
     <>
-      <div className="employee-container" key={props.name}>
-        <img width={125} src={props.iconUrl} />
+      <div className="employee_list" key={props.name}>
+        <img className="worker" width={125} src={props.iconUrl} />
         <div style={{ textAlign: "left" }}>
-          <h3>{props.name}</h3>
-          <h3>{props.emp_id}</h3>
-          <h4>{props.rating}</h4>
-          <h4>{props.cost}</h4>
-          <h4>{props.phone}</h4>
-          <h4>{props.email}</h4>
+          <h3>
+            <i>Employee Name : </i>
+            {props.name}
+          </h3>
+          <h4>
+            <i>Employee Rating : </i>
+            {props.rating}
+          </h4>
+          <h4>
+            <i>Employee Cost : </i>
+            {props.cost}
+          </h4>
+          <h4>
+            <i>Employee Phone Number : </i>
+            {props.phone}
+          </h4>
+          <h4>
+            <i>Employee Email : </i>
+            {props.email}
+          </h4>
         </div>
         <Button
           onClick={(e) => setOpenPaymentModal(true)}
           variant="contained"
           style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
         >
-          Book 
+          Book
         </Button>
       </div>
-      
+
       <Modal
         ariaHideApp={false}
         isOpen={openPaymentModal}
@@ -44,7 +58,7 @@ const Employee = (props) => {
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
             height: "30%",
-            width: "40%"
+            width: "40%",
           },
         }}
       >
