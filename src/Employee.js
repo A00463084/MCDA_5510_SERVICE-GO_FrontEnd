@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import "./Employee.css";
 
-
 const Employee = (props) => {
   const bookEmployee = (e) => {
     console.log("Employee Booked");
@@ -12,11 +11,26 @@ const Employee = (props) => {
     <div className="employee_list" key={props.name}>
       <img className="worker" width={125} src={props.iconUrl} />
       <div style={{ textAlign: "left" }}>
-        <h3><i>Employee Name : </i>{props.name}</h3>
-        <h4><i>Employee Rating : </i>{props.rating}</h4>
-        <h4><i>Employee Cost : </i>{props.cost}</h4>
-        <h4><i>Employee Phone Number : </i>{props.phone}</h4>
-        <h4><i>Employee Email : </i>{props.email}</h4>
+        <h3>
+          <i>Employee Name : </i>
+          {props.name}
+        </h3>
+        <h4>
+          <i>Employee Rating : </i>
+          {props.rating}
+        </h4>
+        <h4>
+          <i>Employee Cost : </i>
+          {props.cost}
+        </h4>
+        <h4>
+          <i>Employee Phone Number : </i>
+          {props.phone}
+        </h4>
+        <h4>
+          <i>Employee Email : </i>
+          {props.email}
+        </h4>
       </div>
       <Button
         onClick={(e) => bookEmployee(e)}
