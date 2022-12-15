@@ -7,7 +7,6 @@ import Profile from "./Profile.js";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
-import TextField from "@material-ui/core/TextField";
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
@@ -28,6 +27,13 @@ const Home = (props) => {
     showUserProfile(props.showProfile);
   }, [props.showProfile]);
 
+  const disabledDates = () => {
+    var today = new Date();
+    var dd = today.getDate() + 1;
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    return yyyy + "-" + mm + "-" + dd;
+  };
   const submitUserInput = (e) => {
     console.log(userInputs);
     if (
@@ -91,10 +97,11 @@ const Home = (props) => {
           <br></br>
           <br></br>
           <InputLabel htmlFor="date">Choose a Date:</InputLabel>
-          <TextField
+          <input
             type="date"
             id="date"
             name="date"
+            min={disabledDates()}
             onChange={(e) => {
               setUserInputs({ ...userInputs, date: e.target.value });
             }}
@@ -140,6 +147,8 @@ const Home = (props) => {
                     phone={employee.phone}
                     email={employee.email}
                     iconUrl={iconUrl}
+                    selectedDate={userInputs.date}
+                    selectedTime={userInputs.timeslot}
                   />
                 );
               })}
