@@ -69,10 +69,10 @@ const PaymentForm = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          date: "01-01-2024", // Has to accept filter value
-          time_slot: "10-1", // Has to accept filter value
+          date: props.order.selectedDate,
+          time_slot: props.order.selectedTime,
           emp_id: parseInt(props.order.emp_id),
-          user_id: 3, // Has to accept user session id
+          user_id: parseInt(localStorage.getItem('user_id')),
         }),
       })
         .then((r) => {
