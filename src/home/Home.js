@@ -1,25 +1,24 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import "./Home.css";
 import Button from "@mui/material/Button";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import Stack from "@mui/material/Stack";
-import employeesData from "../data/employees-data";
 import Employee from "../Employee";
 import logo from "../Homepage_design.jpg";
-import Profile from './Profile.js';
+import Profile from "./Profile.js";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
 
 const Home = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(props.loggedIn);
   const [profile, showUserProfile] = useState(props.showProfile);
-  const [open, setOpen] = useState(false);
-  const [list, showList] = useState(false);
-  const [employees, setEmployees] = useState(employeesData);
-  const anchorRef = useRef(null);
+  const [employees, setEmployees] = useState([]);
+  const [userInputs, setUserInputs] = useState({
+    category: "",
+    date: "",
+    timeslot: "",
+  });
+  const iconUrl =
+    "https://upload.wikimedia.org/wikipedia/commons/5/56/Worker_icon.svg";
   useEffect(() => {
     setIsLoggedIn(props.loggedIn);
   }, [props.loggedIn]);
@@ -28,128 +27,115 @@ const Home = (props) => {
     showUserProfile(props.showProfile);
   }, [props.showProfile]);
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+  const disabledDates = () => {
+    var today = new Date();
+    var dd = today.getDate() + 1;
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    return yyyy + "-" + mm + "-" + dd;
   };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
+  const submitUserInput = (e) => {
+    console.log(userInputs);
+    if (
+      userInputs.category != "" &&
+      userInputs.timeslot != "" &&
+      userInputs.category != "Select" &&
+      userInputs.timeslot != "Select"
+    ) {
+      fetch(process.env.REACT_APP_DOMAIN + "employeelist", {
+        method: "POST",
+        headers: {
+          Accept: "application/json; charset=utf-8",
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        body: JSON.stringify({
+          category: userInputs.category,
+          date: userInputs.date,
+          timeslot: userInputs.timeslot,
+        }),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setEmployees(data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
     }
-
-    setOpen(false);
-    showList(false);
   };
-
-  const openPlumbers = (e) => {
-    let filteredEmployees = employeesData.filter((employee) => {
-      return employee.category === "Plumber";
-    });
-    setEmployees(filteredEmployees);
-    setOpen(false);
-    showList(true);
-  };
-
-  const openElectricians = (e) => {
-    let filteredEmployees = employeesData.filter((employee) => {
-      return employee.category === "Electrician";
-    });
-    setEmployees(filteredEmployees);
-    setOpen(false);
-    showList(true);
-  };
-
-  const openPainters = (e) => {
-    let filteredEmployees = employeesData.filter((employee) => {
-      return employee.category === "Painter";
-    });
-    setEmployees(filteredEmployees);
-    setOpen(false);
-    showList(true);
-  };
-
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
 
   return (
     <div>
       {isLoggedIn === false ? (
         <Fragment>
-          <img alt="Homepage Design" src={logo} style={{ minHeight: '100%' }}/>
+          <img alt="Homepage Design" src={logo} style={{ minHeight: "100%" }} />
         </Fragment>
       ) : profile === true ? (
-        <Profile/>
+        <Profile />
       ) : (
         <div>
-          <h1>Welcome User</h1>
-          <Stack spacing={2}>
-            <div>
-              <Button
-                ref={anchorRef}
-                id="composition-button"
-                aria-controls={open ? "composition-menu" : undefined}
-                aria-expanded={open ? "true" : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-              >
-                Dashboard
-              </Button>
-              <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                placement="bottom-start"
-                transition
-                disablePortal
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin:
-                        placement === "bottom-start"
-                          ? "left top"
-                          : "left bottom",
-                    }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList
-                          autoFocusItem={open}
-                          id="composition-menu"
-                          aria-labelledby="composition-button"
-                          onKeyDown={handleListKeyDown}
-                        >
-                          <MenuItem onClick={openPlumbers}>Plumbing</MenuItem>
-                          <MenuItem onClick={openElectricians}>
-                            Electrical
-                          </MenuItem>
-                          <MenuItem onClick={openPainters}>Painting</MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
-            </div>
-          </Stack>
-          {list === true && employees.length > 0 ? (
+          <h1>Welcome {localStorage.getItem("name")}</h1>
+          <br></br>
+          <InputLabel htmlFor="category">Choose a Category: </InputLabel>
+          <Select
+            name="category"
+            style={{ width: 100 }}
+            id="category"
+            onChange={(e) =>
+              setUserInputs({ ...userInputs, category: e.target.value })
+            }
+          >
+            <MenuItem value="plumbing">Plumbing</MenuItem>
+            <MenuItem value="electrician">Electrician</MenuItem>
+            <MenuItem value="painting">Painting</MenuItem>
+            <MenuItem value="cleaning">Cleaning</MenuItem>
+          </Select>
+          <br></br>
+          <br></br>
+          <InputLabel htmlFor="date">Choose a Date:</InputLabel>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            min={disabledDates()}
+            onChange={(e) => {
+              setUserInputs({ ...userInputs, date: e.target.value });
+            }}
+          />
+          <br></br>
+          <br></br>
+          <InputLabel htmlFor="timeslot">Choose a Time Slot: </InputLabel>
+          <Select
+            style={{ width: 100 }}
+            name="timeslot"
+            id="timeslot"
+            onChange={(e) =>
+              setUserInputs({ ...userInputs, timeslot: e.target.value })
+            }
+          >
+            <MenuItem value="10-11">10-11</MenuItem>
+            <MenuItem value="11-12">11-12</MenuItem>
+            <MenuItem value="12-1">12-1</MenuItem>
+            <MenuItem value="1-2">1-2</MenuItem>
+            <MenuItem value="2-3">2-3</MenuItem>
+            <MenuItem value="3-4">3-4</MenuItem>
+            <MenuItem value="4-5">4-5</MenuItem>
+            <MenuItem value="5-6">5-6</MenuItem>
+          </Select>
+          <br></br>
+          <br></br>
+          <Button
+            onClick={(e) => submitUserInput(e)}
+            variant="contained"
+            style={{ marginLeft: "auto", marginRight: "8px", height: "50px" }}
+          >
+            Submit
+          </Button>
+          {employees.length > 0 ? (
             <div>
               {employees.map((employee) => {
                 return (
@@ -160,7 +146,9 @@ const Home = (props) => {
                     cost={employee.cost}
                     phone={employee.phone}
                     email={employee.email}
-                    iconUrl={employee.iconUrl}
+                    iconUrl={iconUrl}
+                    selectedDate={userInputs.date}
+                    selectedTime={userInputs.timeslot}
                   />
                 );
               })}

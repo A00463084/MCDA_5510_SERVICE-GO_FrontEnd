@@ -3,14 +3,14 @@ import { Button } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import "./Header.css";
 import Tab from "@material-ui/core/Tab";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
 import bcrypt from "bcryptjs";
-import { Link } from "react-router-dom";
-import { type } from "@testing-library/user-event/dist/type";
 
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -67,12 +67,12 @@ const Header = (props) => {
         "$2a$10$CwTycUXWue0Thq9StjUM0u"
       );
     }
-    fetch(process.env.REACT_APP_LOGIN, {
+    fetch(process.env.REACT_APP_DOMAIN + "Main/login", {
       method: "POST",
       headers: {
-        "Accept":  "application/json; charset=utf-8",
+        Accept: "application/json; charset=utf-8",
         "Content-Type": "application/json",
-        "Cache-Control": "no-cache"
+        "Cache-Control": "no-cache",
       },
       body: JSON.stringify({
         email: userLoginFormValues.email,
@@ -83,15 +83,16 @@ const Header = (props) => {
         return response.json();
       })
       .then((response) => {
-        console.log(response[0].Status)
+        console.log(response[0].Status);
         if (response[0].Status === "User Login Successful") {
-           setLoggedIn(true);
-           props.isLoggedIn(true);
-           handleCloseRegisterModal();
-           console.log("Login " + response);
-           localStorage.setItem("email", userLoginFormValues.email);
-           localStorage.setItem("name",response[0].name);
-         }
+          setLoggedIn(true);
+          props.isLoggedIn(true);
+          handleCloseRegisterModal();
+          console.log("Login " + response);
+          localStorage.setItem("email", userLoginFormValues.email);
+          localStorage.setItem("name", response[0].name);
+          localStorage.setItem("user_id", response[0].id);
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -196,26 +197,37 @@ const Header = (props) => {
       country: userRegisterFormValues.country,
     });
 
-    console.log(nameReqd,emailReqd,addrReqd,cityReqd,countryReqd,postalCodeReqd,provinceReqd,phoneReqd,registerPwdReqd);
-    console.log("correct name",correctname);
-    console.log("correct city",correctcity);
-    console.log("correct province",correctprovince);
-    console.log("correct country",correctcountry);
-    console.log("correct po",correctpostalcode);
-    console.log("correct email",correctemail);
-    console.log("correct phone",correctphone);
-    
+    console.log(signupData);
+
+    console.log(
+      nameReqd,
+      emailReqd,
+      addrReqd,
+      cityReqd,
+      countryReqd,
+      postalCodeReqd,
+      provinceReqd,
+      phoneReqd,
+      registerPwdReqd
+    );
+    console.log("correct name", correctname);
+    console.log("correct city", correctcity);
+    console.log("correct province", correctprovince);
+    console.log("correct country", correctcountry);
+    console.log("correct po", correctpostalcode);
+    console.log("correct email", correctemail);
+    console.log("correct phone", correctphone);
 
     if (
-      userRegisterFormValues.name !='' &&
-      userRegisterFormValues.email !='' &&
-      userRegisterFormValues.phone !='' &&
-      hashedPassword !='' &&
-      userRegisterFormValues.address !='' &&
-      userRegisterFormValues.city !='' &&
-      userRegisterFormValues.province !='' &&
-      userRegisterFormValues.postalCode !='' &&
-      userRegisterFormValues.country !='' &&
+      userRegisterFormValues.name != "" &&
+      userRegisterFormValues.email != "" &&
+      userRegisterFormValues.phone != "" &&
+      hashedPassword != "" &&
+      userRegisterFormValues.address != "" &&
+      userRegisterFormValues.city != "" &&
+      userRegisterFormValues.province != "" &&
+      userRegisterFormValues.postalCode != "" &&
+      userRegisterFormValues.country != "" &&
       correctname &&
       correctcity &&
       correctcountry &&
@@ -224,7 +236,7 @@ const Header = (props) => {
       correctphone &&
       correctemail
     ) {
-      fetch(process.env.REACT_APP_REGISTER, {
+      fetch(process.env.REACT_APP_DOMAIN + "Main/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -234,9 +246,8 @@ const Header = (props) => {
       })
         .then((response) => response.json())
         .then((response) => {
-          if (response[0].Status === "User Signup Successful")
-          {
-          setSuccessRegistration(true);
+          if (response[0].Status === "User Signup Successful") {
+            setSuccessRegistration(true);
           }
         });
     }
@@ -546,17 +557,20 @@ const Header = (props) => {
             <br />
             <FormControl required>
               <InputLabel htmlFor="country">Country</InputLabel>
-              <Input
+              <Select
+                style={{ width: 170 }}
+                name="country"
                 id="country"
-                type="text"
-                value={userRegisterFormValues.country}
-                onChange={(e) => {
+                onChange={(e) =>
                   setUserRegisterFormValues({
                     ...userRegisterFormValues,
                     country: e.target.value,
-                  });
-                }}
-              />
+                  })
+                }
+              >
+                <MenuItem value="Canada">Canada</MenuItem>
+                <MenuItem value="US">US</MenuItem>
+              </Select>
               {countryReqd && (
                 <FormHelperText>
                   <span className="red">required</span>
