@@ -42,6 +42,7 @@ const Header = (props) => {
   const [postalCodeReqd, setPostalCodeReqd] = useState(false);
   const [provinceReqd, setProvinceReqd] = useState(false);
   const [registrationSuccess, setSuccessRegistration] = useState(false);
+  const [emailduplicateviolation, setEmailDuplicateViolation] = useState(false);
   const [phoneReqd, setPhoneReqd] = useState(false);
   const [registerPwdReqd, setRegisterPwdReqd] = useState(false);
   const [profile, showUserProfile] = useState(false);
@@ -128,6 +129,15 @@ const Header = (props) => {
     const reg_pc = RegExp(
       /^((\d{5}-?\d{4})|(\d{5})|([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d))$/g
     );
+
+    const reg_pc_can = RegExp(
+      /^[a-zA-Z]{1}[0-9]{1}[a-zA-Z]{1}[- ]{0,1}[0-9]{1}[a-zA-Z]{1}[0-9]{1}/g
+    );
+
+    const reg_pc_us = RegExp(
+      /^[0-9]{5}(?:-[0-9]{4})?$/g
+    );
+
     const reg_phone = RegExp(
       /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/g
     );
@@ -156,11 +166,24 @@ const Header = (props) => {
       setCorrectCountry(true);
     }
 
-    if (reg_pc.test(userRegisterFormValues.postalCode) == false) {
-      setCorrectPostalcode(false);
-    } else {
-      setCorrectPostalcode(true);
+    if(userRegisterFormValues.country=='Canada')
+    {
+      if (reg_pc_can.test(userRegisterFormValues.postalCode) == false) {
+        setCorrectPostalcode(false);
+      } else {
+        setCorrectPostalcode(true);
+      }
+
+    } else
+    {
+      if (reg_pc_us.test(userRegisterFormValues.postalCode) == false) {
+        setCorrectPostalcode(false);
+      } else {
+        setCorrectPostalcode(true);
+      }
+
     }
+
 
     if (reg_phone.test(userRegisterFormValues.phone) == false) {
       setCorrectPhone(false);
@@ -246,8 +269,12 @@ const Header = (props) => {
       })
         .then((response) => response.json())
         .then((response) => {
+          console.log(response[0].Status);
           if (response[0].Status === "User Signup Successful") {
             setSuccessRegistration(true);
+          }
+          if (response[0].Status.includes('Violation of UNIQUE KEY constraint')) {
+            setEmailDuplicateViolation(true);
           }
         });
     }
@@ -644,6 +671,11 @@ const Header = (props) => {
             {registrationSuccess === true && (
               <FormControl>
                 <span>Registration Successful. Please Login!</span>
+              </FormControl>
+            )}
+            {emailduplicateviolation === true && (
+              <FormControl>
+                <span>Account Already Exists. Please Login!</span>
               </FormControl>
             )}
             <br />
