@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useElements, CardElement, useStripe } from "@stripe/react-stripe-js";
 import './payment.css'
+import Email from "./Email";
 
 const PaymentForm = (props) => {
   const elements = useElements();
@@ -99,6 +100,12 @@ const PaymentForm = (props) => {
         .then((r) => {
           console.log(r);
         });
+
+        localStorage.setItem("emp_name",props.order.name);
+        localStorage.setItem("time",props.order.selectedTime);
+        localStorage.setItem("date",props.order.selectedDate);
+        Email.sendEmail();
+        
     }
   };
 
