@@ -7,7 +7,7 @@ import Modal from "react-modal";
 const Employee = (props) => {
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
-  const handleCloseRegisterModal = () => setOpenPaymentModal(false);
+  const handleClosePaymentModal = () => setOpenPaymentModal(false);
 
   return (
     <>
@@ -48,7 +48,7 @@ const Employee = (props) => {
         ariaHideApp={false}
         isOpen={openPaymentModal}
         contentLabel="Login"
-        onRequestClose={handleCloseRegisterModal}
+        onRequestClose={handleClosePaymentModal}
         style={{
           content: {
             top: "50%",
@@ -57,7 +57,7 @@ const Employee = (props) => {
             bottom: "auto",
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
-            height: "30%",
+            height: "40%",
             width: "40%",
           },
         }}

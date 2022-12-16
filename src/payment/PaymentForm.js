@@ -1,18 +1,34 @@
 import React, { useState } from "react";
 import { useElements, CardElement, useStripe } from "@stripe/react-stripe-js";
+import './payment.css'
 
 const PaymentForm = (props) => {
   const elements = useElements();
   const stripe = useStripe();
 
+  const [nameOnCard, setNameOnCard] = useState("");
+  const [validNameOnCard, setValidNameOnCard] = useState(true);
   const [stripeErrorMsg, setStripeErrorMsg] = useState("");
   const [backendErrorMsg, setBackendErrorMsg] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
+  const [payButtonDisable, setPayButtonDisable] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setPayButtonDisable(true)
+
+    const name_regex = RegExp(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g);
+    if (name_regex.test(nameOnCard) === false) {
+      setValidNameOnCard(false)
+      setPayButtonDisable(false)
+      return
+    } else {
+      setValidNameOnCard(true)
+    }
+
     if (!stripe || !elements) {
+      setPayButtonDisable(false)
       return;
     }
 
@@ -34,6 +50,7 @@ const PaymentForm = (props) => {
 
     if (backendError) {
       setBackendErrorMsg(backendError.message);
+      setPayButtonDisable(false)
       console.log(backendError.message);
       return;
     }
@@ -52,6 +69,7 @@ const PaymentForm = (props) => {
 
     if (stripeError) {
       setStripeErrorMsg(stripeError.message);
+      setPayButtonDisable(false)
       console.log(stripeError.message);
       return;
     }
@@ -96,6 +114,25 @@ const PaymentForm = (props) => {
               borderRadius: "10px",
             }}
           >
+            <input 
+              type="text"
+              value={nameOnCard}
+              onChange={(e) => {
+                setNameOnCard(e.target.value);
+              }}
+              style={{fontSize: "14px", border: "0", width: "100%"}} 
+              placeholder="Name on Card"
+              required />
+          </div>
+          {validNameOnCard === false ? <p style={{color: "red"}}>Name can not have numbers or special characters</p> : ""}
+          <br/>
+          <div
+            style={{
+              padding: "10px 20px",
+              border: "1px solid grey",
+              borderRadius: "10px",
+            }}
+          >
             <CardElement />
           </div>
           {stripeErrorMsg !== "" ? (
@@ -109,17 +146,7 @@ const PaymentForm = (props) => {
             <></>
           )}
           <br />
-          <button
-            style={{
-              fontSize: "15px",
-              marginLeft: "45%",
-              padding: "10px 20px",
-              backgroundColor: "#0082ff",
-              color: "white",
-              border: "1px solid white",
-              borderRadius: "5px",
-            }}
-          >
+          <button style={{ backgroundColor:  payButtonDisable ? '#e5e5e5' : '#0082ff' }} disabled={payButtonDisable}>
             Pay
           </button>
         </form>
