@@ -11,6 +11,7 @@ import Tab from "@material-ui/core/Tab";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
 import bcrypt from "bcryptjs";
+import { green } from "@material-ui/core/colors";
 
 const Header = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -272,10 +273,11 @@ const Header = (props) => {
           console.log(response[0].Status);
           if (response[0].Status === "User Signup Successful") {
             setSuccessRegistration(true);
+            setEmailDuplicateViolation(false);
           }
           if (response[0].Status.includes('Violation of UNIQUE KEY constraint')) {
             setEmailDuplicateViolation(true);
-          }
+          } 
         });
     }
   };
@@ -670,12 +672,12 @@ const Header = (props) => {
 
             {registrationSuccess === true && (
               <FormControl>
-                <span>Registration Successful. Please Login!</span>
+                <span style={{color:"green"}}>Registration Successful. Please Login!</span>
               </FormControl>
             )}
             {emailduplicateviolation === true && (
               <FormControl>
-                <span>Account Already Exists. Please Login!</span>
+                <span className="red">Account Already Exists. Please Login!</span>
               </FormControl>
             )}
             <br />
