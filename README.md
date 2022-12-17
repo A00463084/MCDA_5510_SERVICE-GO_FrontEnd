@@ -10,6 +10,8 @@ Team Members
 
 Mentor: Simon Achkar
 
+# Note: Main Branch is the Branch with Latest Commits
+
 
 # How to Run
 
